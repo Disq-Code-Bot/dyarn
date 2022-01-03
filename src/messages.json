@@ -10,5 +10,9 @@
       "noConfigKey" : "No dyarn config options was found on config file.",
       "noFilePath" : "No dyarn config options was found on config file.",
       "noScripts" : "No scripts exists in dyarn config options"
+   },
+   "RunApp": {
+      "invalidScript" : "No script found with this name",
+      "noScriptInvoker" : "Please provide a Deno command for each script!"
    }
 }
