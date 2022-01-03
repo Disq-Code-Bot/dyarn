@@ -5,7 +5,9 @@ import { RunApp } from './src/runner.ts'
 import specs from './src/specs.json' assert {type: 'json'}
 
 const command = Deno.args[0] as string
-const args = Deno.args.shift() as string[] | string
+const args = Deno.args.length !== 1 ?
+   Deno.args.slice().splice(1, Deno.args.length - 1) as string[] 
+   : [''] as string[]
 
 (async function main() {
    try {
@@ -14,10 +16,8 @@ const args = Deno.args.shift() as string[] | string
       
       //* Getting config file path from command line or default
       let configFilePath
-      if(typeof args === 'string' && RegExp(/^--config=./).test(args)) 
-         configFilePath = args.replace(/^--config=/, '')
-      else if (Array.isArray(args)) args.forEach(arg => {
-         if(RegExp(/^--config=./).test(arg)) configFilePath = arg.replace(/^--config=/, '')
+      if (Array.isArray(args)) args.forEach(arg => {
+         if(RegExp(/^--config=([^\s].*)/).test(arg)) configFilePath = arg.replace(/^--config=/, '')
       })
       else configFilePath = specs.defaultConfigFile
 
@@ -30,7 +30,7 @@ const args = Deno.args.shift() as string[] | string
       //* Voila, finished!
       Deno.exit(0)
    } catch(error) {
-      console.log(`UNEXPECTED ERROR:\n ${error}`)
+      console.log(`ERROR:\n ${error}`)
       Deno.exit(1)
    }
 })()

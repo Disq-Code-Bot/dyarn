@@ -13,10 +13,10 @@ export async function ConfigFileCheck(
    //* Reading config file. Try and catch to handle if file doesn't exist
    let parsedConfigs
    try {
-      const configFile = await Deno.readTextFile(configFilePath)
+      const configFile = await Deno.readTextFile(`${Deno.cwd()}/${configFilePath}`)
       parsedConfigs = JSON.parse(configFile)[specs.configKey] as ConfigOptions
    } catch {
-      throw new Error(`Error: '${configFilePath}' doesn't exist!`)
+      throw new Error(`Error: '${configFilePath}' doesn't exist or is empty!`)
    }
 
    //* Checking if config file has correct format options

@@ -10,20 +10,23 @@ export async function RunApp(
    if(!scriptObject) throw new Error(messages.RunApp.invalidScript)
    
    //* Getting script's Deno flags and invoker defined in config file
-   let denoRun
-   const denoRunStart = [Deno.execPath(), scriptObject.invoker]
+   let denoRun: string[]
    if(!scriptObject.denoFlags ||
       scriptObject.denoFlags.split(' ').length === 0) {
-      denoRun = denoRunStart
+      denoRun = [] as string[]
    } else {
       const denoFlags = scriptObject.denoFlags.split(' ')
-      denoRun = [...denoRunStart,...denoFlags]
+      denoRun = denoFlags
    }
 
    //* Actually running the script
    let runner
    try {
-      runner = Deno.run({ cmd: denoRun })
+      runner = Deno.run({ cmd: [
+         Deno.execPath(), scriptObject.invoker,
+         ...denoRun,
+         `${Deno.cwd()}/${configFile.mainFile}`
+      ] })
    } catch (error) {
       throw new Error(`UNEXPECTED ERROR:\n ${error}`)
    }
