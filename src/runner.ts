@@ -2,7 +2,7 @@ import type { ConfigOptions } from './configFileCheck.ts'
 
 const messages = {
    "invalidScript" : "No script found with this name",
-   "noScriptInvoker" : "Please provide a Deno command for each script!"
+   "noScriptInvoker" : "Please provide a Deno command defined on you scripts!"
 }
 
 export async function RunApp(
@@ -27,7 +27,7 @@ export async function RunApp(
    let runner
    try {
       runner = Deno.run({ cmd: [
-         Deno.execPath(), scriptObject.invoker,
+         'deno', scriptObject.invoker,
          ...denoRun,
          `${Deno.cwd()}/${configFile.mainFile}`
       ] })

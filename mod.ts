@@ -7,7 +7,7 @@ const args = Deno.args.length !== 1 ?
    Deno.args.slice().splice(1, Deno.args.length - 1) as string[] 
    : [''] as string[]
 
-(async function main() {
+await (async function main() {
    try {
       //* Checking if script has right permissions to run
       await PermsCheck()
@@ -18,7 +18,7 @@ const args = Deno.args.length !== 1 ?
          if(RegExp(/^--config=([^\s].*)/).test(arg)) configFilePath = arg.replace(/^--config=/, '')
       })
       else configFilePath = defaultConfigFile
-
+      
       //* Checking if config file exists and is has correct format
       const configFile = await ConfigFileCheck(configFilePath)
       

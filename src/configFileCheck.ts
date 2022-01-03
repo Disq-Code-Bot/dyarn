@@ -17,20 +17,21 @@ export type ConfigOptions = {
 //TODO add later custom options for maybe automated dep checks, lint, output file
 
 export async function ConfigFileCheck(
-   configFilePath: string = defaultFile
+   configFilePath: string = defaultConfigFile
    ): Promise<ConfigOptions> {
    //* Reading config file. Try and catch to handle if file doesn't exist
    let parsedConfigs
+   
    try {
       const configFile = await Deno.readTextFile(`${Deno.cwd()}/${configFilePath}`)
-      parsedConfigs = JSON.parse(configFile)[dyarnConfigKey] as ConfigOptions
+      parsedConfigs = await JSON.parse(configFile)[dyarnConfigKey] as ConfigOptions
    } catch {
       throw new Error(`Error: '${configFilePath}' doesn't exist or is empty!`)
    }
-
+   
    //* Checking if config file has correct format options
    if(!parsedConfigs.mainFile) throw new Error(messages.noConfigKey)
-
+   
    if(!parsedConfigs.scripts || typeof parsedConfigs.scripts !== 'object') 
       throw new Error(messages.noScripts)
    
