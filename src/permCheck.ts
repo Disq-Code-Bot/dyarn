@@ -1,6 +1,11 @@
 //* Checking if script has right permissions to run
 
-import messages from "./messages.json" assert { type: 'json' }
+const messages = {
+   "noReadAccess" : "You must grant read access to this script to use it.",
+   "noReadAccessRecommendation" : "Script has not been globally granted read access. \n You will be prompted to grant read access but it is recommended that you grant it globally.",
+   "noRunAccess" : "You must grant run access to this script to use it.",
+   "noRunAccessRecommendation" : "Script has not been globally granted run access. \n You will be prompted to grant run access but it is recommended that you grant it globally."
+}
 
 export async function PermsCheck(): Promise<void> {
    //* Checking if runner has read permission
@@ -9,10 +14,10 @@ export async function PermsCheck(): Promise<void> {
 
    if(CheckReadPerm.state !== "granted") {
       //* Requesting perm if not granted
-      console.warn(messages.PermCheck.noReadAccessRecommendation)
+      console.warn(messages.noReadAccessRecommendation)
       const readReq = await Deno.permissions.request(readPermDesc)
 
-      if(readReq.state === "denied") throw new Error(messages.PermCheck.noReadAccess)
+      if(readReq.state === "denied") throw new Error(messages.noReadAccess)
    } 
 
    //* Checking if runner has run permission
@@ -21,9 +26,9 @@ export async function PermsCheck(): Promise<void> {
    
    if(CheckRunPerm.state !== "granted") {
       //* Requesting perm if not granted
-      console.warn(messages.PermCheck.noRunAccessRecommendation)
+      console.warn(messages.noRunAccessRecommendation)
       const runReq = await Deno.permissions.request(runPermDesc)
 
-      if(runReq.state === "denied") throw new Error(messages.PermCheck.noRunAccess)
+      if(runReq.state === "denied") throw new Error(messages.noRunAccess)
    }
 }

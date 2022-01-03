@@ -1,8 +1,6 @@
 import { PermsCheck } from './src/permCheck.ts'
-import { ConfigFileCheck } from './src/configFileCheck.ts'
+import { ConfigFileCheck, defaultConfigFile } from './src/configFileCheck.ts'
 import { RunApp } from './src/runner.ts'
-
-import specs from './src/specs.json' assert {type: 'json'}
 
 const command = Deno.args[0] as string
 const args = Deno.args.length !== 1 ?
@@ -19,7 +17,7 @@ const args = Deno.args.length !== 1 ?
       if (Array.isArray(args)) args.forEach(arg => {
          if(RegExp(/^--config=([^\s].*)/).test(arg)) configFilePath = arg.replace(/^--config=/, '')
       })
-      else configFilePath = specs.defaultConfigFile
+      else configFilePath = defaultConfigFile
 
       //* Checking if config file exists and is has correct format
       const configFile = await ConfigFileCheck(configFilePath)

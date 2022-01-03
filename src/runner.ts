@@ -1,5 +1,9 @@
 import type { ConfigOptions } from './configFileCheck.ts'
-import messages from './messages.json' assert {type: 'json'}
+
+const messages = {
+   "invalidScript" : "No script found with this name",
+   "noScriptInvoker" : "Please provide a Deno command for each script!"
+}
 
 export async function RunApp(
    configFile: ConfigOptions, 
@@ -7,7 +11,7 @@ export async function RunApp(
    ): Promise<void> {
    //* Checking if invoker is correct
    const scriptObject = configFile.scripts[command]
-   if(!scriptObject) throw new Error(messages.RunApp.invalidScript)
+   if(!scriptObject) throw new Error(messages.noScriptInvoker)
    
    //* Getting script's Deno flags and invoker defined in config file
    let denoRun: string[]
