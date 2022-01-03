@@ -21,7 +21,7 @@ No deps. used...
 * **...Download**
 ```bash 
 # Using Deno install
-deno install --allow-run --allow-read --root --name dyarn https://github.com/Disq-Code-Bot/dyarn
+deno install --allow-run --allow-read --name dyarn https://deno.land/x/dyarn@v1.0.1/mod.ts
 ```
 > **Note**: You must give run and read permissions, to script (if not given at install you'll be prompted at runtime, but we highly recomed to grant at install, we are trying to make things easier, not adding additional prompts). Otherwise, script won't be able to access/run required files
 
