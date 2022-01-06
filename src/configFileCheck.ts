@@ -1,32 +1,35 @@
-const dyarnConfigKey = "dyarnOptions"
-const defaultFile = "mod.ts"
+import { dyarnConfigKey } from './config-file.ts'
+import type { ConfigOptions } from './config-file.ts'
 
 const messages = {
    "noConfigFile" : "No config file found. Please create one and name it 'config.json' or define your own and pass it's path as --config-file=<file name> argument.",
    "noConfigKey" : "No dyarn config options was found on config file.",
    "noFilePath" : "No dyarn config options was found on config file.",
-   "noScripts" : "No scripts exists in dyarn config options"
+   "noScripts" : "No scripts exists in dyarn config options",
+   "JSONParseError" : "Error parsing config file. Please check if it's valid JSON. JSON returned:",
 }
 
 export const defaultConfigFile = "config.json"
 
-export type ConfigOptions = {
-   scripts: Record<string, {invoker: string, denoFlags?: string}>
-   mainFile: typeof defaultFile
-}
 //TODO add later custom options for maybe automated dep checks, lint, output file
 
 export async function ConfigFileCheck(
    configFilePath: string = defaultConfigFile
    ): Promise<ConfigOptions> {
    //* Reading config file. Try and catch to handle if file doesn't exist
+   let configFile
    let parsedConfigs
-   
+
    try {
-      const configFile = await Deno.readTextFile(`${Deno.cwd()}/${configFilePath}`)
-      parsedConfigs = await JSON.parse(configFile)[dyarnConfigKey] as ConfigOptions
+      configFile = await Deno.readTextFile(`${Deno.cwd()}/${configFilePath}`)
    } catch {
       throw new Error(`Error: '${configFilePath}' doesn't exist or is empty!`)
+   }
+   
+   try {
+      parsedConfigs = await JSON.parse(configFile)[dyarnConfigKey] as ConfigOptions
+   } catch(error) {
+      throw new Error(`${messages.JSONParseError} ${error}`)
    }
    
    //* Checking if config file has correct format options
