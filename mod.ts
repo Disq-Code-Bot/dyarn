@@ -28,7 +28,7 @@ await (async function main() {
       //* Voila, finished!
       Deno.exit(0)
    } catch(error) {
-      console.log(`ERROR:\n ${error}`)
+      console.log(`[ERROR]:\n ${error}`)
       Deno.exit(1)
    }
 })()
