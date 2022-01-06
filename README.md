@@ -11,7 +11,7 @@ If you have any suggestion, don't mind opening an issue please!!
 
 ---
 ### **Technologies**
-No deps. used... 
+Dependency free!
 
 
 ---
@@ -21,26 +21,29 @@ No deps. used...
 * **...Download**
 ```bash 
 # Using Deno install
-deno install --allow-run --allow-read --name dyarn https://deno.land/x/dyarn@v1.0.1/mod.ts
+deno install --allow-run --allow-read --name dyarn https://deno.land/x/dyarn@v1.0.2/mod.ts
 ```
 > **Note**: You must give run and read permissions, to script (if not given at install you'll be prompted at runtime, but we highly recomed to grant at install, we are trying to make things easier, not adding additional prompts). Otherwise, script won't be able to access/run required files
 
 * **...Usage**
-After installing, in your project's root directory, add a ```config.json``` file where we'l add the scripts config. You may if you want create a custom named file in a custom path, for that provide the flag ```--config=``` with a path to your config file (e.g.: ```dyarn <script> --config=src/config.json```).
+After installing, in your project's root directory, add a ```config.json``` file where we'l add the scripts config: 
 
-The config file format (you may pass other options accepted by Deno)
+> [more about the config file](#Uninstalling)
+
 ```json
 {
    "dyarnOptions": {
       //Here you'll pass you main file path, by default runner will search for a "mod.ts" file in the current running directory
-      "mainFile": "<file>",
+      "mainFile": "mod.ts",
       //Here you'l provide all your scripts with their command/alias, Deno command and Deno flags
-      "scripts": [
-         "<script command/alias>": {
-            "invoker": "<the command you willing to run>",
-            "flags": "<Deno flags to run with the script: permissions, configs, etc...>"
+      "scripts": {
+         "dev": {
+            //Deno original commands
+            "invoker": "run",
+            //Deno original flags
+            "flags": "--watch --all"
          }
-      ]
+      }
    }
 }
 ```
@@ -56,6 +59,37 @@ Voila, you should be able to see your script running...
 ```bash
 deno uninstall dyarn
 ```
+
+---
+### *Configs file*
+As our objective is to make you life a little easier with Deno commands, adding a custom config file or adding more flags, well... wouldn't help a lot. So by default (you may if you wan't, change this with the: ``` --config={path} ``` flag after dyarn invoker) dyarn uses Deno recommended config file name (and later auto identifiable file by Deno): ```config.json```.
+
+All dyarn options should be passed inside the ```dyarnOptions``` keys inside the config.json file. 
+```json
+{
+   "dyarnOptions": {
+      //...
+      // Your options here
+   }
+}
+```
+
+*And here is the json schema/options:*
+
+- ```mainFile```: Your main file that will be ran by default. Is not required and if not defined will look for a ```mod.ts``` file.
+- ```scripts```: Here you'll pass all the scripts you want to use with dyarn inside an object. The scripts keys will be the commands used when running dyarn... e.g.: in dyarn config ```"scripts": { "dev": {...} }}``` will be dyarn dev in your CLI. At least one script is strictly required (why? well for the moment if it isn't for this, dyarn is basically useless. We plan on adding more functionalities, but for the moment this is it). Each script is an object that accepts the following properties: 
+   - ```invoker```: the original Deno command that Deno will run when you run dayrn with the respective script (parent key). This option is required in every script
+   - ```flags```: the original Deno flags that Deno will run along with the Deno invoker when you use dyarn. This option is not required. This way your app will run with no permissions. Dyarn will pass them before passing your file path
+   (More about [Deno flags](https://deno.land/manual@v1.17.2/getting_started/permissions))
+   - ```customFile```: in case you wan't to run a different file for this specific script, you may use this option. As the other options, it does not affect your other scripts. This option is not required. (may be useful for running test por example, which normally requires to reference a different file, e.g.: ```_tests/test_mod.ts```)
+      > Note: If defined, will override your ```mainFile``` option in dyarn's root config for this script
+   - ```appFlags```: you may sometimes define flags inside your own apps, so we added this where you can put them. As they are custom and should be read by your app, Dyarn passes them after passing your app path on the CLI, just as when running Deno command's directly in the CLI. Not required and have no influence neither on Deno nor Dyarn.
+
+---
+### *Dyarn flags*
+These flags are custom dyarn flags and are not at all related to Deno neither influence in your App's runtime:
+
+- ```--config=```: if you wan't to create a custom dyarn config file or put it in a custom directory
 
 --- 
 ### *Contributing*
