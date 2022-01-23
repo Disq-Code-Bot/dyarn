@@ -1,4 +1,4 @@
-import { dyarnConfigKey } from './config-file.ts'
+import { dyarnConfigKey, defaultConfigFile } from './config-file.ts'
 import type { ConfigOptions } from './config-file.ts'
 
 const messages = {
@@ -9,7 +9,7 @@ const messages = {
    "JSONParseError" : "Error parsing config file. Please check if it's valid JSON. JSON returned:",
 }
 
-export const defaultConfigFile = "config.json"
+
 
 //TODO add later custom options for maybe automated dep checks, lint, output file
 
