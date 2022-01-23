@@ -3,7 +3,7 @@
 ### **General info**
 Dyarn: the Deno runner help. 
 
-After the Disq Code Bot team discovered Deno and some of it's magic with typescript, we decided using it instead of Node. But we only missed two little things: the ```package.json``` with it's scripts property and the ```yarn <script>``` (or ```npm run <script>``` if you prefer). So we created dyarn, to help you with running scripts using config.json file that is supported by Deno and that latter be automatically imported (based on Deno's documentation: https://deno.land/manual@v1.17.1/getting_started/configuration_file).
+After the Disq Code Bot team discovered Deno and some of it's magic with typescript, we decided using it instead of Node. But we only missed two little things: the ```package.json``` with it's scripts property and the ```yarn <script>``` (or ```npm run <script>``` if you prefer). So we created dyarn, to help you with running scripts using deno.json file that is supported by Deno and that latter be automatically imported (based on Deno's documentation: https://deno.land/manual/getting_started/configuration_file).
 
 We plan on maybe adding some more things that we miss from Node's packages managers, to make Deno workflow even more efficient. 
 
@@ -26,9 +26,9 @@ deno install --allow-run --allow-read --name dyarn https://deno.land/x/dyarn@v1.
 > **Note**: You must give run and read permissions, to script (if not given at install you'll be prompted at runtime, but we highly recomed to grant at install, we are trying to make things easier, not adding additional prompts). Otherwise, script won't be able to access/run required files
 
 * **...Usage**
-After installing, in your project's root directory, add a ```config.json``` file where we'l add the scripts config: 
+After installing, in your project's root directory, add a ```deno.json``` file where we'l add the scripts config: 
 
-> [more about the config file](#Uninstalling)
+> [more about the config file](#emconfigs-fileem)
 
 ```json
 {
@@ -62,9 +62,9 @@ deno uninstall dyarn
 
 ---
 ### *Configs file*
-As our objective is to make you life a little easier with Deno commands, adding a custom config file or adding more flags, well... wouldn't help a lot. So by default (you may if you wan't, change this with the: ``` --config={path} ``` flag after dyarn invoker) dyarn uses Deno recommended config file name (and later auto identifiable file by Deno): ```config.json```.
+As our objective is to make you life a little easier with Deno commands, adding a custom config file or adding more flags, well... wouldn't help a lot. So by default (you may if you wan't, change this with the: ``` --config={path} ``` flag after dyarn invoker) dyarn uses Deno recommended config file name (and later auto identifiable file by Deno): ```deno.json```.
 
-All dyarn options should be passed inside the ```dyarnOptions``` keys inside the config.json file. 
+All dyarn options should be passed inside the ```dyarnOptions``` keys inside the deno.json file. 
 ```json
 {
    "dyarnOptions": {

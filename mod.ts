@@ -1,5 +1,6 @@
 import { PermsCheck } from './src/permCheck.ts'
-import { ConfigFileCheck, defaultConfigFile } from './src/configFileCheck.ts'
+import { defaultConfigFile } from './src/config-file.ts'
+import { ConfigFileCheck } from './src/configFileCheck.ts'
 import { RunApp } from './src/runner.ts'
 
 const command = Deno.args[0] as string
