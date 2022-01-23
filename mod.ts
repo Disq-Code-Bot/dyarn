@@ -1,5 +1,5 @@
 import { PermsCheck } from './src/permCheck.ts'
-import { defaultConfigFile } from './src/config-file.ts'
+import { defaultConfigFile } from './src/global-defs.ts'
 import { ConfigFileCheck } from './src/configFileCheck.ts'
 import { RunApp } from './src/runner.ts'
 

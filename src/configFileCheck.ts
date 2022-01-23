@@ -1,5 +1,5 @@
-import { dyarnConfigKey, defaultConfigFile } from './config-file.ts'
-import type { ConfigOptions } from './config-file.ts'
+import { dyarnConfigKey, defaultConfigFile } from './global-defs.ts'
+import type { ConfigOptions } from './global-defs.ts'
 
 const messages = {
    "noConfigFile" : "No config file found. Please create one and name it 'config.json' or define your own and pass it's path as --config-file=<file name> argument.",

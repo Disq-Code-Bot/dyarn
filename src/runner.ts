@@ -1,5 +1,5 @@
-import type { ConfigOptions } from './config-file.ts'
-import { defaultFile } from './config-file.ts'
+import type { ConfigOptions } from './global-defs.ts'
+import { defaultFile } from './global-defs.ts'
 
 const messages = {
    "invalidScript" : "No script found with this name",
