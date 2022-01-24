@@ -62,7 +62,8 @@ deno uninstall dyarn
 
 ---
 ### *Configs file*
-As our objective is to make you life a little easier with Deno commands, adding a custom config file or adding more flags, well... wouldn't help a lot. So by default (you may if you wan't, change this with the: ``` --config={path} ``` flag after dyarn invoker) dyarn uses Deno recommended config file name (and later auto identifiable file by Deno): ```deno.json```.
+As our objective is to make you life a little easier with Deno commands, adding a custom config file or adding more flags, well... wouldn't help a lot. So by default (you may if you wan't, change this with the: ``` --config={path} ``` flag after dyarn invoker) dyarn uses Deno recommended config file name (and later auto identifiable file by Deno): ```deno.json```. 
+> Note: If more than one config file path is provided, the last one provided will be the used one!
 
 All dyarn options should be passed inside the ```dyarnOptions``` keys inside the deno.json file. 
 ```json
@@ -98,3 +99,8 @@ But before consider following these for:
 - new features: fork this repo and create a new branch under this name format "feature/<feature-name>" 
 - fixes: fork this repo and create a new branch following this format "fix/<fix-name>" 
 (in both cases open a pul request when finished)
+
+### *Fun fact*
+Yes, we use dyarn to develop and test... well, dyarn... Kinda paradoxical don't you think?
+
+Like, using a wrench to fix this same wrench...?
