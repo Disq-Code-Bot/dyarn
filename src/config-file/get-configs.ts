@@ -8,14 +8,17 @@ interface GetConfigFromFileOverload {
 }
 
 export const getConfigsFromFile: GetConfigFromFileOverload = (configPath: string) => {
+   //* Getting actual file content
    const configFileRead = Deno.readTextFileSync(configPath)
 
+   //* Checking if file exists
    if(!configFileRead) return {
       config: undefined,
       err: true,
       err_msg: `Provided or default: '${configPath}', doesn't exist or is empty/has no config!`
    }      
 
+   //* Transforming file into JSON object and handling json parse errors
    let configFile
    try{
       configFile = JSON.parse(configFileRead)
@@ -27,12 +30,14 @@ export const getConfigsFromFile: GetConfigFromFileOverload = (configPath: string
       }
    }
 
+   //* Checking if config file contains config under the dyarn config key
    if(!configFile[dyarnConfigKey]) return {
       config: undefined,
       err: true,
       err_msg: `No dayrn config was provided in the used ${configPath} file! Be sure to also write configs under the ${dyarnConfigKey} key.`
    }
 
+   //* Finally returning configs in case of success
    return {
       config: configFile[dyarnConfigKey]
    }
