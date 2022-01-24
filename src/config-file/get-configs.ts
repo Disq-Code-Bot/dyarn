@@ -1,8 +1,6 @@
+import { dyarnConfigKey } from './../global-defs.ts';
 import type { ConfigOptions } from './config-types.d.ts'
 
-export function checkExists(configPath: string): boolean {
-   return Deno.statSync(configPath).isFile
-}
 
 interface GetConfigFromFileOverload {
    (configPath: string): { config?: ConfigOptions, err?: true, err_msg?: string }
@@ -29,13 +27,13 @@ export const getConfigsFromFile: GetConfigFromFileOverload = (configPath: string
       }
    }
 
-   if(!configFile[configPath]) return {
+   if(!configFile[dyarnConfigKey]) return {
       config: undefined,
       err: true,
-      err_msg: `No dayrn config was provided in the used ${configPath} file! Be sure to add it inside a dyarnOptions key.`
+      err_msg: `No dayrn config was provided in the used ${configPath} file! Be sure to also write configs under the ${dyarnConfigKey} key.`
    }
 
    return {
-      config: configFile[configPath]
+      config: configFile[dyarnConfigKey]
    }
 }
