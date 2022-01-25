@@ -2,6 +2,7 @@
 import { ConfigOptions } from "./config-types.d.ts";
 import { getConfigsFromFile } from "./get-configs.ts"
 import { getConfigFilePath } from "./get.ts"
+import { configsCheck } from './config-check.ts'
 
 interface ConfigFileMainOverload {
    (args: string[]): { config?: ConfigOptions, err?: true, err_msg?: string }
@@ -21,20 +22,29 @@ export const configFile: ConfigFileMainOverload = (args: string []) => {
    //* Checking if config file exists
    if(!Deno.statSync(configPath).isFile) return {
       err: true,
-      err_msg: configPathGet.err_msg,
-      config: `The used '${configPath}' doesn't exist!`
+      err_msg: `The used '${configPath}' doesn't exist!`,
+      config: undefined
    }
 
    //* Getting configs
-   const configs = getConfigsFromFile(configPath)
-   if(configs.err) return {
+   const configsFromFile = getConfigsFromFile(configPath)
+   if(configsFromFile.err) return {
       err: true,
-      err_msg: configs.err_msg,  
+      err_msg: configsFromFile.err_msg,  
       config: undefined
    }
 
    //*Checking if configs are valid
+   const checks = configsCheck(configsFromFile.config)
+   if(!checks.success) return {
+      err: true,
+      err_msg: checks.err,
+      config: undefined
+   }
 
+   //* Returning configs
+   const config = configsFromFile.config as ConfigOptions
+   return { config: config }
 }
 
-export const getScripts 
+//TODO Add scripts getter export
