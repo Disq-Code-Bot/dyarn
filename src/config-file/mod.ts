@@ -9,6 +9,8 @@ interface ConfigFileMainOverload {
    (args: string[]): { config?: ConfigOptions }
 }
 
+//TODO Add config file caching inside a .dyarn folder per project
+
 export const configFile: ConfigFileMainOverload = (args: string []) => {
    //* Looking for config file and it's commands
    const configPathGet = getConfigFilePath(args)
@@ -47,4 +49,5 @@ export const configFile: ConfigFileMainOverload = (args: string []) => {
    return { config: config }
 }
 
-//TODO Add scripts getter export
+
+export { getScripts } from "./get-scripts.ts"
