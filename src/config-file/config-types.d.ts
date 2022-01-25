@@ -6,6 +6,6 @@ export interface ScriptsType {
 }
 
 export interface ConfigOptions {
-   mainFile: string
+   mainFile?: string
    scripts: Record<string, ScriptsType>
 }
