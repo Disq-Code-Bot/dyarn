@@ -12,7 +12,7 @@ export const RecursiveTypeCheck: RecursiveTypeCheckOverload = (obj, againstObj) 
             const keyNoArr = key.replace('_[]', '')
             if(!obj[keyNoArr]) continue
          }
-         const keyNoArr = key.replace('[]', '')
+         const keyNoArr = key.replace(`${key.startsWith('_') ? '_[]' : '[]'}`, '')
 
          //* In case is not defined and obligatory
          if(!obj[keyNoArr]) return {
@@ -29,6 +29,30 @@ export const RecursiveTypeCheck: RecursiveTypeCheckOverload = (obj, againstObj) 
          //* In case is array get deeper
          Array.from(obj[keyNoArr]).forEach((value: any) => 
          RecursiveTypeCheck(value, againstObj[key]))
+      } 
+      //* In case type should be an object
+      else if(key.startsWith('{}') || key.startsWith('_{}')) {
+         //* In case is optional: checking if is even defined
+         if(key.startsWith('_')) {
+            const keyNoObj = key.replace('_{}', '')
+            if(!obj[keyNoObj]) continue
+         }
+         const keyNoObj = key.replace(`${key.startsWith('_') ? '_{}' : '{}'}`, '')
+
+         //* In case is not defined and obligatory
+         if(!obj[keyNoObj]) return {
+            checks: false,
+            err: `The key '${keyNoObj}' is missing!`
+         }
+         
+         //* In case is not object check type
+         if(!(typeof obj[keyNoObj] === 'object')) return {
+            checks: false,
+            err: `The key '${keyNoObj}' is not an object!`
+         }
+         
+         //* In case is object get deeper
+         RecursiveTypeCheck(obj[keyNoObj], againstObj[key])
       }
       //* Checking if key is optional
       else if(key.startsWith('_')) {
