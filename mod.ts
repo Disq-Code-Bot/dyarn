@@ -1,4 +1,4 @@
-import { PermsCheck } from './src/perms/mod.ts'
+import { PermsCheck } from './src/perms/check.ts'
 import { cli  } from './src/cli/mod.ts'
 
 const args = Deno.args.splice(0, 1) ?? undefined 
