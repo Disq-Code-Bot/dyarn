@@ -17,9 +17,9 @@ export const getConfigFilePath: GetConfigFile = (args: string[]) => {
    //* returning default
    const checkCustomConfigPath = args.find(arg => RegExp(/^--config=/).test(arg))
    if(!checkCustomConfigPath) return { configPath: defaultConfigFile }
-
+   
    //* Getting custom config path
-   const customConfigPath = checkCustomConfigPath.at(-1)?.replace(/^--config=/, '')
+   const customConfigPath = checkCustomConfigPath.replace(/^--config=/, '')
    
    //* Checking for empty config flag
    if(!customConfigPath) return { 

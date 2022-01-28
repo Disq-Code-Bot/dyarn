@@ -3,14 +3,14 @@ import type { RunOptions } from '../../types/deno-types.d.ts'
 import { defaultFile } from '../global-defs.ts'
 
 interface InvokeCfgScriptsOverload {
-   (script: string, args: string[]): { success: boolean, cmdData?: RunOptions, hasScripts?: boolean, err_msg?: string }
+   (script: string, args: string[]): Promise<{ success: boolean, cmdData?: RunOptions, hasScripts?: boolean, err_msg?: string }>
 }
 
 //* Get config file and check for config scripts
 export const invokeCfgScripts: InvokeCfgScriptsOverload = 
-   (script: string, args: string[]) => {
+   async (script: string, args: string[]) => {
    //* Getting config 
-   const configs = configFile(args)
+   const configs = await configFile(args)
 
    if(configs.err) return {
       success: false,

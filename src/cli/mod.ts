@@ -16,7 +16,7 @@ export async function cli(args: string[]):
    //*Checking for config file commands 
    //TODO Uncomment this after adding Dyarn built in commands
    //if(!cmdOptions) {
-      const cfgCmd = invokeCfgScripts(args[0], args.slice(1))
+      const cfgCmd = await invokeCfgScripts(args[0], args.slice(1))
       
       if(!cfgCmd.success && !cfgCmd.hasScripts) return {
          success: false,

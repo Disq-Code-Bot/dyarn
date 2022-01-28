@@ -5,13 +5,13 @@ import { getConfigFilePath } from "./get.ts"
 import { configsCheck } from './config-check.ts'
 
 interface ConfigFileMainOverload {
-   (args: string[]): { config?: ConfigOptions, err?: true, err_msg?: string }
-   (args: string[]): { config?: ConfigOptions }
+   (args: string[]): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
+   (args: string[]): Promise<{ config?: ConfigOptions }>
 }
 
 //TODO Add config file caching inside a .dyarn folder per project
 
-export const configFile: ConfigFileMainOverload = (args: string []) => {
+export const configFile: ConfigFileMainOverload = async (args: string []) => {
    //* Looking for config file and it's commands
    const configPathGet = getConfigFilePath(args)
    if(configPathGet.err) return {
@@ -22,9 +22,15 @@ export const configFile: ConfigFileMainOverload = (args: string []) => {
    const configPath = configPathGet.configPath as string
 
    //* Checking if config file exists
-   if(!Deno.statSync(configPath).isFile) return {
+   try {
+      await Deno.stat(configPath)
+   } catch (err) {
+      console.log(`[ERROR] The provided/default config file path "${configPath}" was not found!`)
+      Deno.exit(1)
+   }
+   if(!(await Deno.stat(configPath)).isFile) return {
       err: true,
-      err_msg: `The used '${configPath}' doesn't exist!`,
+      err_msg: `The used '${configPath}' isn't a file!`,
       config: undefined
    }
 
