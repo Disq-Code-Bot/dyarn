@@ -1,10 +1,18 @@
 import { PermsCheck } from './src/perms/check.ts'
 import { cli  } from './src/cli/mod.ts'
 
-const args = Deno.args.splice(0, 1) ?? undefined 
+
+//TODO Add https://deno.land/std@0.97.0/fmt for better logging and colors :)
 
 await (async function main() {
-   try {
+   if(!Deno.args || Deno.args.length === 0) {
+      console.error("[ERROR] You must provide at least one argument!")
+      Deno.exit(1)
+   }
+   
+   const args = Array.from(Deno.args).splice(1)
+   try {   
+
       //* Checking if script has right permissions to run
       //TODO Improve permissions check
       await PermsCheck()
