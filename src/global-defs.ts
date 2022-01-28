@@ -7,8 +7,8 @@ export const configType = {
    "_{}scripts": { 
       "invoker": "string",
       "_flags": "string",
-      "_customFile": "string",
-      "_appFlags": "string"
+      "_file": "string",
+      "_appFlags": "string",
+      "_env": "string",
    }
-   
 }
