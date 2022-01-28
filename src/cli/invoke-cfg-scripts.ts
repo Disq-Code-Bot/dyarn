@@ -38,8 +38,9 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
    const runFile = `${Deno.cwd()}/${scriptData.customFile ?? configs.config?.mainFile ?? defaultFile}`
    const runFlags = scriptData.flags?.split(' ') ?? []
    const appFlags = scriptData.appFlags?.split(' ') ?? []
+   const env = scriptData.env ?? {}
    const runApp = ['deno', scriptData.invoker]
-   //TODO Add env vars
+   //TODO Add CLI env vars
    
    //*Checking if run file is directory or even exists 
    try {
@@ -58,6 +59,7 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
       success: true,
       cmdData: {
          cmd: runApp.concat(runFlags, runFile, appFlags),
+         env: env,
          //TODO add configurations to other Deno.run options
          stdout: 'inherit',
          stderr: 'inherit',

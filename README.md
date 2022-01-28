@@ -77,14 +77,16 @@ All dyarn options should be passed inside the ```dyarnOptions``` keys inside the
 
 *And here is the json schema/options:*
 
-- ```mainFile```: Your main file that will be ran by default. Is not required and if not defined will look for a ```mod.ts``` file.
-- ```scripts```: Here you'll pass all the scripts you want to use with dyarn inside an object. The scripts keys will be the commands used when running dyarn... e.g.: in dyarn config ```"scripts": { "dev": {...} }}``` will be dyarn dev in your CLI. At least one script is strictly required (why? well for the moment if it isn't for this, dyarn is basically useless. We plan on adding more functionalities, but for the moment this is it). Each script is an object that accepts the following properties: 
+- *optional:* ```mainFile```: Your main file that will be ran by default. Is not required and if not defined will look for a ```mod.ts``` file.
+- *optional:* ```scripts```: Here you'll pass all the scripts you want to use with dyarn inside an object. The scripts keys will be the commands used when running dyarn... e.g.: in dyarn config ```"scripts": { "dev": {...} }}``` will be dyarn dev in your CLI. At least one script is strictly required (why? well for the moment if it isn't for this, dyarn is basically useless. We plan on adding more functionalities, but for the moment this is it). Each script is an object that accepts the following properties: 
    - ```invoker```: the original Deno command that Deno will run when you run dayrn with the respective script (parent key). This option is required in every script
-   - ```flags```: the original Deno flags that Deno will run along with the Deno invoker when you use dyarn. This option is not required. This way your app will run with no permissions. Dyarn will pass them before passing your file path
+   - *optional:* ```flags```: the original Deno flags that Deno will run along with the Deno invoker when you use dyarn. This option is not required. This way your app will run with no permissions. Dyarn will pass them before passing your file path
    (More about [Deno flags](https://deno.land/manual@v1.17.2/getting_started/permissions))
-   - ```customFile```: in case you wan't to run a different file for this specific script, you may use this option. As the other options, it does not affect your other scripts. This option is not required. (may be useful for running test por example, which normally requires to reference a different file, e.g.: ```_tests/test_mod.ts```)
+   - *optional:* ```file```: in case you wan't to run a different file for this specific script, you may use this option. As the other options, it does not affect your other scripts. This option is not required. (may be useful for running test por example, which normally requires to reference a different file, e.g.: ```_tests/test_mod.ts```)
       > Note: If defined, will override your ```mainFile``` option in dyarn's root config for this script
-   - ```appFlags```: you may sometimes define flags inside your own apps, so we added this where you can put them. As they are custom and should be read by your app, Dyarn passes them after passing your app path on the CLI, just as when running Deno command's directly in the CLI. Not required and have no influence neither on Deno nor Dyarn.
+   - *optional:* ```appFlags```: you may sometimes define flags inside your own apps, so we added this where you can put them. As they are custom and should be read by your app, Dyarn passes them after passing your app path on the CLI, just as when running Deno command's directly in the CLI. Not required and have no influence neither on Deno nor Dyarn.
+   - *optional:* ```env```: in case you need to define some env variables inside your app, you may define them here. This option is optional and has an object format with any key/value type:
+      - ```[key: any]: any```
 
 ---
 ### *Dyarn flags*
