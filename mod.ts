@@ -1,35 +1,29 @@
-import { PermsCheck } from './src/permCheck.ts'
-import { defaultConfigFile } from './src/global-defs.ts'
-import { ConfigFileCheck } from './src/configFileCheck.ts'
-import { RunApp } from './src/runner.ts'
+import { PermsCheck } from './src/perms/mod.ts'
+import { cli  } from './src/cli/mod.ts'
 
-const command = Deno.args[0] as string
-const args = Deno.args.length !== 1 ?
-   Deno.args.slice().splice(1, Deno.args.length - 1) as string[] 
-   : [''] as string[]
+const args = Deno.args.splice(0, 1) ?? undefined 
 
 await (async function main() {
    try {
       //* Checking if script has right permissions to run
+      //TODO Improve permissions check
       await PermsCheck()
-      
-      //* Getting config file path from command line or default
-      let configFilePath
-      if (Array.isArray(args)) args.forEach(arg => {
-         if(RegExp(/^--config=([^\s].*)/).test(arg)) configFilePath = arg.replace(/^--config=/, '')
-      })
-      else configFilePath = defaultConfigFile
-      
-      //* Checking if config file exists and is has correct format
-      const configFile = await ConfigFileCheck(configFilePath)
+
+      //TODO Add OS check
+      //TODO Add version check and update recommendation
       
       //* Actually running user's app
-      await RunApp(configFile, command)
+      const cliStatus = await cli(args)
+
+      if(!cliStatus.success) {
+         console.error(`[ERROR]: ${cliStatus.err}`)
+         Deno.exit(1)
+      }
    
       //* Voila, finished!
       Deno.exit(0)
    } catch(error) {
-      console.log(`[ERROR]:\n ${error}`)
+      console.log(`[UNEXPECTED ERROR]:\n ${error}`)
       Deno.exit(1)
    }
 })()
