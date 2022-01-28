@@ -9,6 +9,6 @@ export const configType = {
       "_flags": "string",
       "_file": "string",
       "_appFlags": "string",
-      "_env": "string",
+      "_{}env": "?",
    }
 }

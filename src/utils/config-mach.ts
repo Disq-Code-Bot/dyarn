@@ -56,6 +56,9 @@ export const RecursiveTypeCheck: RecursiveTypeCheckOverload = (obj, againstObj) 
             err: `The key '${keyNoObj}' is not an object!`
          }
          
+         //* In case object may contain any key and value
+         if(againstObj[key] === "?") continue
+
          //* In case is object get deeper
          for(const checkObjChild in obj[keyNoObj]) {
             const objectCheck = RecursiveTypeCheck(obj[keyNoObj][checkObjChild], againstObj[key])
@@ -94,6 +97,7 @@ export const RecursiveTypeCheck: RecursiveTypeCheckOverload = (obj, againstObj) 
       }
       //* Get deeper in case it's an object
       else if(typeof obj[key] === 'object') {
+         if(againstObj[key] === "?") continue
          const recursiveRes = RecursiveTypeCheck(obj[key], againstObj[key])
          if(!recursiveRes.checks) return recursiveRes
       }

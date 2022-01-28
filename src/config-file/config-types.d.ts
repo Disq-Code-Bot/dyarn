@@ -3,6 +3,7 @@ export interface ScriptsType {
    flags?: string,
    customFile?: string
    appFlags?: string
+   env?: Record<any, any>
 }
 
 export interface ConfigOptions {
