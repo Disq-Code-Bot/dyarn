@@ -42,14 +42,15 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
    //TODO Add env vars
    
    //*Checking if run file is directory or even exists 
-   if(Deno.statSync(runFile).isDirectory) return {
-      success: false,
-      err_msg: `The invoked path "${runFile}" is a directory!`
+   try {
+      await Deno.stat(runFile)
+   } catch (err) {
+      console.log(`[ERROR] The provided/default config file path "${runFile}" was not found!`)
+      Deno.exit(1)
    }
-
-   if(!Deno.statSync(runFile).isFile) return {
+   if(!(await Deno.stat(runFile)).isFile) return {
       success: false,
-      err_msg: `File "${runFile}" was not found!`
+      err_msg: `The used '${runFile}' isn't a file!`,
    }
 
 
