@@ -11,6 +11,7 @@ await (async function main() {
    }
    
    const args = Array.from(Deno.args).splice(1)
+   const script = Deno.args[0]
    try {   
 
       //* Checking if script has right permissions to run
@@ -21,7 +22,7 @@ await (async function main() {
       //TODO Add version check and update recommendation
       
       //* Actually running user's app
-      const cliStatus = await cli(args)
+      const cliStatus = await cli(script, args)
 
       if(!cliStatus.success) {
          console.error(`[ERROR]: ${cliStatus.err}`)

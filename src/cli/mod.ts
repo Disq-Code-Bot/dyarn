@@ -6,7 +6,7 @@ import { invokeCfgScripts } from './invoke-cfg-scripts.ts'
 
 
 //TODO Add update command and dyarn own commands
-export async function cli(args: string[]): 
+export async function cli(script: string, args: string[]): 
    Promise<{ success: true } | { success: false, err: string }>
    {
    let cmdOptions: RunOptions
@@ -16,9 +16,9 @@ export async function cli(args: string[]):
    //*Checking for config file commands 
    //TODO Uncomment this after adding Dyarn built in commands
    //if(!cmdOptions) {
-      const cfgCmd = await invokeCfgScripts(args[0], args.slice(1))
+      const cfgCmd = await invokeCfgScripts(script, args.slice(1))
       
-      if(!cfgCmd.success && !cfgCmd.hasScripts) return {
+      if(!cfgCmd.success && cfgCmd.hasScripts === false) return {
          success: false,
          err: `Neither any Dyarn built in commands nor any config file scripts with name "${args[0]}" were found!`
       }
