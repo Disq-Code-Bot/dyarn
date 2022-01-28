@@ -1,20 +1,45 @@
 //* Iterates though all dyarn/deno/config file commands
 //* and calls the respective invoker
+import type { RunOptions } from '../../types/deno-types.d.ts'
 
-import { configFile } from "../config-file/mod.ts"
+import { invokeCfgScripts } from './invoke-cfg-scripts.ts'
 
 
 //TODO Add update command and dyarn own commands
-export function cli(args: string[]): 
-   { success: true } | { success: false, err: string } 
+export async function cli(args: string[]): 
+   Promise<{ success: true } | { success: false, err: string }>
    {
+   let cmdOptions: RunOptions
    //TODO Add dyarn default commands
    //TODO Add other commands to be checked before looking for config file
 
-   //* Getting config file and it's commands
-   const configs = configFile(args)
+   //*Checking for config file commands 
+   //TODO Uncomment this after adding Dyarn built in commands
+   //if(!cmdOptions) {
+      const cfgCmd = invokeCfgScripts(args[0], args.slice(1))
+      
+      if(!cfgCmd.success && !cfgCmd.hasScripts) return {
+         success: false,
+         err: `Neither any Dyarn built in commands nor any config file scripts with name "${args[0]}" were found!`
+      }
 
-   //TODO Add config file processing
+      if(!cfgCmd.success) return {
+         success: false,
+         err: cfgCmd.err_msg!
+      }
+
+      cmdOptions = cfgCmd.cmdData!
+   //}
+
+   //* In case of success, run the command
+   const process = Deno.run(cmdOptions)
+   
+   const { success, code, signal } = await process.status()
+
+   if(!success) return {
+      success: false,
+      err: `Command "${args[0]}" failed with code ${code} and signal ${signal}!!`
+   }
 
    return { success: true }
 }
