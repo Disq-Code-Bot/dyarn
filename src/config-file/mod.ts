@@ -1,7 +1,7 @@
 //* Assembles all config file functions in one
 import { ConfigOptions } from "./config-types.d.ts";
 import { getConfigsFromFile } from "./get-configs.ts"
-import { getConfigFilePath } from "./get.ts"
+import { getConfigFilePath } from "./get-path.ts"
 import { configsCheck } from './config-check.ts'
 
 interface ConfigFileMainOverload {
