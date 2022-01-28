@@ -4,7 +4,7 @@ export const defaultConfigFile = "deno.json"
 
 export const configType = {
    "_mainFile": "string",
-   "[]scripts": { 
+   "_[]scripts": { 
       "invoker": "string",
       "_flags": "string",
       "_customFile": "string",
