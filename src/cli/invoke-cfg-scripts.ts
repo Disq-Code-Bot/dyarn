@@ -42,7 +42,7 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
    //TODO Add env vars
    
    //*Checking if run file is directory or even exists 
-   if(!Deno.statSync(runFile).isDirectory) return {
+   if(Deno.statSync(runFile).isDirectory) return {
       success: false,
       err_msg: `The invoked path "${runFile}" is a directory!`
    }
@@ -58,8 +58,8 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
       cmdData: {
          cmd: runApp.concat(runFlags, runFile, appFlags),
          //TODO add configurations to other Deno.run options
-         stdout: 'piped',
-         stderr: 'piped',
+         stdout: 'inherit',
+         stderr: 'inherit',
          stdin: 'inherit'
       },
       hasScripts: true,
