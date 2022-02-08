@@ -20,6 +20,7 @@ await (async function main() {
 
       //TODO Add OS check
       //TODO Add version check and update recommendation
+      //TODO add flags to object[] to make it easier to check/use flags
       
       //* Actually running user's app
       const cliStatus = await cli(script, args)

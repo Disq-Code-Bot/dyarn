@@ -24,9 +24,12 @@ Dependency free!
 deno install --allow-run --allow-read --name dyarn https://deno.land/x/dyarn/mod.ts
 ```
 > **Note**: You must give run and read permissions, to script (if not given at install you'll be prompted at runtime, but we highly recomed to grant at install, we are trying to make things easier, not adding additional prompts). Otherwise, script won't be able to access/run required files
+---
+### **Usage**
+After installing... 
+...Run one of Dyarn's [built-in commands](#embuilt-in-commandsem)
 
-* **...Usage**
-After installing, in your project's root directory, add a ```deno.json``` file where we'l add the scripts config: 
+...or in your project's root directory, add a ```deno.json``` file where we'll add the scripts config: 
 
 > [more about the config file](#emconfigs-fileem)
 
@@ -46,6 +49,7 @@ After installing, in your project's root directory, add a ```deno.json``` file w
       }
    }
 }
+
 ```
 
 * **... finally running**
@@ -59,6 +63,18 @@ Voila, you should be able to see your script running...
 ```bash
 deno uninstall dyarn
 ```
+
+---
+### *Built in commands*
+Here are the Deno's built in commands (you may also run ``dyarn help`` ). 
+> Be aware, if your custom commands conflict with dyarn one's names, dyarn built in commands will be ran instead
+
+- ``help``: Shows you the help message. Flags:
+   - ~~``--cmd=``: This flag is optional and will show you specific commands help. (Still not available for al commands srry, but all are listed here in this Readme, so don't worry about hidden commands). Only works with Dyarn's built in commands~~ still unavailable sorry
+
+
+> **Dyarn also has some global flags**
+- ```--config=```: if you wan't to create a custom dyarn config file or put it in a custom directory and use it when running your custom scripts
 
 ---
 ### *Configs file*
@@ -89,12 +105,6 @@ All dyarn options should be passed inside the ```dyarnOptions``` keys inside the
       - ```[key: any]: any```
 
 ---
-### *Dyarn flags*
-These flags are custom dyarn flags and are not at all related to Deno neither influence in your App's runtime:
-
-- ```--config=```: if you wan't to create a custom dyarn config file or put it in a custom directory
-
---- 
 ### *Contributing*
 For contributions, you may open an issue or pull request, we will give a look into it and decide wha't should be done. 
 But before consider following these for:
