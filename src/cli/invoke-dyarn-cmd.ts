@@ -43,22 +43,34 @@ function checkFlags(args: string[], flagsToCheck: CommandFlags): { success: bool
    }
 }
 
-export const invokeDenoCommands = async (script: string, args: string[]): Promise<{
+export const invokeDyarnCommands = async (script: string, args: string[]): Promise<{
    success: true
 } | {
    success: false
    notFound?: true
+   err?: string
 }> => {
    const command = commands.find(cmd => cmd.invoker === script)
 
    if(!command) return {
       success: false,
-      notFound: true
+      notFound: true,
    }
 
-   if(command._flags && typeof args !== 'undefined') {
-      
-   } else if (command.flags) {
-      
+   if(command.flags){
+      const { success, err_msg } = checkFlags(args, command.flags)
+
+      if(!success) return {
+         success: false,
+         err: err_msg!
+      }
+   }
+
+   const runCommand = await command.run(args)
+
+   if(runCommand.success) return runCommand
+   else return {
+      success: false,
+      err: runCommand.err!
    }
 }
