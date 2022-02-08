@@ -1,7 +1,7 @@
 //* Iterates though all dyarn/deno/config file commands
 //* and calls the respective invoker
 
-import { invokeDenoCommands } from './invoke-dyarn-cmd.ts'
+import { invokeDyarnCommands } from './invoke-dyarn-cmd.ts'
 import { invokeCfgScripts } from './invoke-cfg-scripts.ts'
 
 
@@ -9,10 +9,18 @@ import { invokeCfgScripts } from './invoke-cfg-scripts.ts'
 export async function cli(script: string, args: string[]): 
    Promise<{ success: true } | { success: false, err: string }>
    {
-   
+   //TODO Add extended verbose option that prints all errors, all warnings, file paths, env vars, etc.
+   //TODO and maybe select which of them to print --verbose=all,err,warn,paths,env
+
    //* Dyarn own commands
-   //TODO Add dyarn default commands
-   //TODO Add other commands to be checked before looking for config file
+   const dayrnInternal = await invokeDyarnCommands(script, args)
+   if(dayrnInternal.success) return {
+      success: true
+   }
+   else if(!dayrnInternal.success && !dayrnInternal.notFound) return {
+      success: false,
+      err: dayrnInternal.err!
+   }
 
    //*Checking for config file commands 
    const cfgCmd = await invokeCfgScripts(script, args.slice(1))
