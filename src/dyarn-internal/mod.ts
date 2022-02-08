@@ -1,8 +1,10 @@
+import { help } from './help/help-cmd.ts'
+
 export interface Command {
    invoker: string,
    description?: string,
    flags?: CommandFlags
-   run: (args: string[]) => Promise<{ success: true } | { success: false, err: string }>,
+   run: (args: string[] | undefined) => Promise<{ success: true } | { success: false, err: string }>,
 }
 
 export interface  CommandFlags {
@@ -18,6 +20,7 @@ export interface  CommandFlags {
 export const commands: Command[] = [
    {
       invoker: "help",
-      run: help
+      description: "Prints this help message",
+      run: () => help(),
    }
 ]

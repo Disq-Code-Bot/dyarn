@@ -40,7 +40,9 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
    const appFlags = scriptData.appFlags?.split(' ') ?? []
    const env = scriptData.env ?? {}
    const runApp = ['deno', scriptData.invoker]
+   //TODO Add .env file from config file and read it + include in env
    //TODO Add CLI env vars
+
    
    //*Checking if run file is directory or even exists 
    try {
