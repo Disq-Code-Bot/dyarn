@@ -6,19 +6,14 @@ import { flagExtractor } from './src/utils/flag-extractor.ts'
 //TODO Add https://deno.land/std@0.97.0/fmt for better logging and colors :)
 
 await (async function main() {
+   //* Checking if there is any flag
    if(!Deno.args || Deno.args.length === 0) {
       console.error("[ERROR] You must provide at least one argument!")
       Deno.exit(1)
    }
 
    try {   
-
-      //* Checking if script has right permissions to run
-      //TODO Improve permissions check
-      await PermsCheck()
-
-      //TODO Add OS check
-      //TODO Add version check and update recommendation
+      //* Extracting flags and command
       const flags = flagExtractor(Deno.args)
       if(flags.err) {
          console.error(`[ERROR]: ${flags.err}`)
@@ -27,6 +22,16 @@ await (async function main() {
 
       const script = flags.cmd as string
       const args = flags.flags
+
+      //* Checking if script has right permissions to run
+      const permissions = await PermsCheck()
+      if(!permissions.success) {
+         console.error(`[ERROR]: ${permissions.err}`)
+         Deno.exit(1)
+      }
+
+      //TODO Add OS check
+      //TODO Add version check and update recommendation
       
       //* Actually running user's app
       const cliStatus = await cli(script, args)

@@ -18,6 +18,12 @@ export function flagExtractor(denoArgs: string[]): {
    const cmd = denoArgs[0]
    const args = Array.from(Deno.args).splice(1)
 
+   if(cmd.match((/^(--|-)/))) return {
+      flags: undefined,
+      cmd: undefined,
+      err: `The first argument passed (${cmd}) seems to be a flag and not a command!`
+   }
+
    if(!args) return {
       flags: undefined, 
       cmd,

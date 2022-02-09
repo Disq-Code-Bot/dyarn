@@ -1,23 +1,26 @@
 //* Checking if script has right permissions to run
 
-const messages = {
-   "noReadAccess" : "You must grant read access to this script to use it.",
-   "noReadAccessRecommendation" : "Script has not been globally granted read access. \n You will be prompted to grant read access but it is recommended that you grant it globally.",
-   "noRunAccess" : "You must grant run access to this script to use it.",
-   "noRunAccessRecommendation" : "Script has not been globally granted run access. \n You will be prompted to grant run access but it is recommended that you grant it globally."
-}
-
-export async function PermsCheck(): Promise<void> {
+export async function PermsCheck(): Promise<{
+   success: true
+   err: undefined
+} | {
+   success: false
+   err: string
+}> {
    //* Checking if runner has read permission
    const readPermDesc = { name: "read" } as const
    const CheckReadPerm = await Deno.permissions.query(readPermDesc)
 
    if(CheckReadPerm.state !== "granted") {
       //* Requesting perm if not granted
-      console.warn(messages.noReadAccessRecommendation)
+      //TODO Add as optional with --verbose flag
+      //console.warn(`It is highly recommended that you grant read permission to the runner at installation time!`)
       const readReq = await Deno.permissions.request(readPermDesc)
 
-      if(readReq.state === "denied") throw new Error(messages.noReadAccess)
+      if(readReq.state === "denied") return {
+         success: false,
+         err: `You must grant Dyarn read access to use it!!`
+      }
    } 
 
    //* Checking if runner has run permission
@@ -26,9 +29,18 @@ export async function PermsCheck(): Promise<void> {
    
    if(CheckRunPerm.state !== "granted") {
       //* Requesting perm if not granted
-      console.warn(messages.noRunAccessRecommendation)
+      //TODO Add as optional with --verbose flag
+      //console.warn(`It is highly recommended that you grant run permission to the runner at installation time!`))
       const runReq = await Deno.permissions.request(runPermDesc)
 
-      if(runReq.state === "denied") throw new Error(messages.noRunAccess)
+      if(runReq.state === "denied") return {
+         success: false,
+         err: `You must grant Dyarn run access to use it!!`
+      }
+   }
+
+   return {
+      success: true,
+      err: undefined
    }
 }
