@@ -1,5 +1,7 @@
 //* Checking if script has right permissions to run
 
+const neededPerms = ["read", "net", "run"]
+
 export async function PermsCheck(): Promise<{
    success: true
    err: undefined
@@ -7,36 +9,27 @@ export async function PermsCheck(): Promise<{
    success: false
    err: string
 }> {
-   //* Checking if runner has read permission
-   const readPermDesc = { name: "read" } as const
-   const CheckReadPerm = await Deno.permissions.query(readPermDesc)
+   const permsRes = await Promise.all(neededPerms.map(async perm => {
+      const permQuery = await Deno.permissions.query({ name: perm as any })
 
-   if(CheckReadPerm.state !== "granted") {
-      //* Requesting perm if not granted
+      if(permQuery.state === "granted") return
+      
       //TODO Add as optional with --verbose flag
       //console.warn(`It is highly recommended that you grant read permission to the runner at installation time!`)
-      const readReq = await Deno.permissions.request(readPermDesc)
 
-      if(readReq.state === "denied") return {
-         success: false,
-         err: `You must grant Dyarn read access to use it!!`
+      const permReq = await Deno.permissions.request({ name: perm as any })
+
+      if(permReq.state === "granted") return
+      else if(permReq.state === 'denied') return {
+         err: `${permReq}`
       }
-   } 
+   }) as unknown as {err: string}[])
 
-   //* Checking if runner has run permission
-   const runPermDesc = { name: "run" } as const
-   const CheckRunPerm = await Deno.permissions.query(runPermDesc)
-   
-   if(CheckRunPerm.state !== "granted") {
-      //* Requesting perm if not granted
-      //TODO Add as optional with --verbose flag
-      //console.warn(`It is highly recommended that you grant run permission to the runner at installation time!`))
-      const runReq = await Deno.permissions.request(runPermDesc)
+   const permResFilter = permsRes.filter(res => !!res)
 
-      if(runReq.state === "denied") return {
-         success: false,
-         err: `You must grant Dyarn run access to use it!!`
-      }
+   if(permResFilter.length > 0) return {
+      success: false,
+      err: `Some permissions where not granted, and Dyarn need them: \n\n Please grant it: ${permResFilter.map(val => val!.err).join(", ")} permission${permResFilter.length > 1 ? 's' : ''}!`
    }
 
    return {
