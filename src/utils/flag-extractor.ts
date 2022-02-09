@@ -34,6 +34,9 @@ export function flagExtractor(denoArgs: string[]): {
       //* Filtering what is not a flag name in case it is separated property
       if(!arg.match(/^(--|-)/)) return
       
+      if(arg.match(/^-{1}[A-z]{2,}=*/)) return {
+         err: `The flag ${arg} is a simple arg and should contain only one character as name, check if you're using it correctly!`
+      }
       const flagName = arg.replace(/^(--|-)/, '').replace(/=.+$/, '').replace(/=/, '')
       
       const subSanitizedValue =  arg.replace(/^(--|-)[^\s]+=/, '')
@@ -52,10 +55,19 @@ export function flagExtractor(denoArgs: string[]): {
          flagName,
          flagValue: true
       }
-      else if(isSeparated) return {
-         flagName,
-         flagValue: nextItem
-      } 
+      else if(isSeparated){ 
+         let nextIVal: string | boolean
+         try {
+            nextIVal = JSON.parse(nextItem)
+         } catch {
+            //* In case of error, it's not a JSON nor boolean
+            nextIVal = nextItem
+         }
+         return {
+            flagName,
+            flagValue: nextIVal
+         } 
+      }
       else if(typeof flagValue === 'undefined') return {
          err: `Flag "${flagName}" has no value defined after it's \`=\` separator!`
       }
