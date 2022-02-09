@@ -3,6 +3,7 @@ export const defaultFile = "mod.ts"
 export const defaultConfigFile = "deno.json"
 
 export { flags } from './values/flags.ts'
+export * from './values/gh-related.ts'
 
 export const configType = {
    "_mainFile": "string",
@@ -14,3 +15,5 @@ export const configType = {
       "_{}env": "?",
    }
 }
+
+export const version = "1.0.5-dev"
