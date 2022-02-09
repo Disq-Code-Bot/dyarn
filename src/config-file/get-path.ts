@@ -17,7 +17,9 @@ export const getConfigFilePath: GetConfigFile = (flags: FlagsArray) => {
 
    //* Checking if any of the args are the custom config path one and if not
    //* returning default
-   const customConfigFileP = flags.find(flag => flag.flagName === flagsConsts.configFileFlag)
+   const customConfigFileP = flags.reverse().find(flag => 
+      flag.flagName === flagsConsts.configFileFlag || 
+      flag.flagName === flagsConsts.configFileMiniFlag )
    if(!customConfigFileP) return { configPath: defaultConfigFile }
 
    //* Checking if is really a path string
