@@ -1,9 +1,14 @@
+export interface Flags {
+   flagName: string
+   flagValue: string | boolean
+}
+export type FlagsArray = Flags[] | undefined
+
+export type CMD = string
+
 export function flagExtractor(denoArgs: string[]): {
-   flags: {
-      flagName: string;
-      flagValue: string | boolean;
-   }[] | undefined
-   cmd: string
+   flags: FlagsArray
+   cmd: CMD
    err: undefined
 } | {
    flags: undefined
