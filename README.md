@@ -71,6 +71,8 @@ Here are the Deno's built in commands (you may also run ``dyarn help`` ).
 - ``help``: Shows you the help message. Flags:
    - ~~``--cmd=``: This flag is optional and will show you specific commands help. (Still not available for al commands srry, but all are listed here in this Readme, so don't worry about hidden commands). Only works with Dyarn's built in commands~~ still unavailable sorry
 - ``issues``: Shows the url to Dyarn repo's issues
+- ``version``: Shows the current Dyarn version
+   - ``--all`` | ``-a``: Shows the most recent and all versions in addition to the current one
 - ~~``update``: Updates your Dyarn command line~~ still not available sorry
 
 > **Dyarn also has some global flags**

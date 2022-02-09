@@ -1,5 +1,10 @@
 import type { FlagsArray } from '../utils/flag-extractor.ts'
+
+import { issuesUrl } from '../global-defs.ts'
+
+//* Commands
 import { help } from './help/help-cmd.ts'
+import { getVersion } from './version.ts'
 
 export interface Command {
    invoker: string,
@@ -23,7 +28,7 @@ export const commandsNoHelp: Command[] = [
       invoker: 'issues',
       description: 'Gives you the link to the issues page of the project',
       run: async () => {
-         await console.log(`You may open an issues at: https://github.com/Disq-Code-Bot/dyarn/issues !`)
+         await console.log(`You may open an issues at: ${issuesUrl}!`)
          return { success: true }
       }
    },
@@ -41,6 +46,26 @@ export const commandsNoHelp: Command[] = [
          ],
       },
       run: async () => { await console.log(''); return {success: true} }
+   },
+   {
+      invoker: 'version',
+      description: `Prints Dyanr's current version`,
+      flags: {
+         required: false,
+         arr: [
+            {
+               flag: '--list',
+               required: false,
+               description: 'Prints the list of all available versions',
+            },
+            {
+               flag: '-l',
+               required: false,
+               description: 'Prints the list of all available versions',
+            }
+         ],
+      },
+      run: async (flags) => { const versionRun = await getVersion(flags); return versionRun },
    }
 ]
 
