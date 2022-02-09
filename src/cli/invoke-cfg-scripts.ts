@@ -1,16 +1,17 @@
+import type { FlagsArray } from '../utils/flag-extractor.ts'
 import { configFile, getScripts } from '../config-file/mod.ts'
 import type { RunOptions } from '../../types/deno-types.d.ts'
 import { defaultFile } from '../global-defs.ts'
 
 interface InvokeCfgScriptsOverload {
-   (script: string, args: string[]): Promise<{ success: boolean, cmdData?: RunOptions, hasScripts?: boolean, err_msg?: string }>
+   (script: string, flags: FlagsArray): Promise<{ success: boolean, cmdData?: RunOptions, hasScripts?: boolean, err_msg?: string }>
 }
 
 //* Get config file and check for config scripts
 export const invokeCfgScripts: InvokeCfgScriptsOverload = 
-   async (script: string, args: string[]) => {
+   async (script: string, flags: FlagsArray) => {
    //* Getting config 
-   const configs = await configFile(args)
+   const configs = await configFile(flags)
 
    if(configs.err) return {
       success: false,

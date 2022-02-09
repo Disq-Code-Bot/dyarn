@@ -1,7 +1,8 @@
+import type { FlagsArray } from '../utils/flag-extractor.ts'
 import { checkFlags } from '../dyarn-internal/flags-check.ts'
 import { commands } from '../dyarn-internal/mod.ts'
 
-export const invokeDyarnCommands = async (script: string, args: string[]): Promise<{
+export const invokeDyarnCommands = async (script: string, flags: FlagsArray): Promise<{
    success: true
 } | {
    success: false
@@ -16,7 +17,7 @@ export const invokeDyarnCommands = async (script: string, args: string[]): Promi
    }
 
    if(command.flags){
-      const { success, err_msg } = checkFlags(args, command.flags)
+      const { success, err_msg } = checkFlags(flags, command.flags)
 
       if(!success) return {
          success: false,
@@ -24,7 +25,7 @@ export const invokeDyarnCommands = async (script: string, args: string[]): Promi
       }
    }
 
-   const runCommand = await command.run(args)
+   const runCommand = await command.run(flags)
 
    if(runCommand.success) return runCommand
    else return {

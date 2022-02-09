@@ -1,31 +1,37 @@
+import type { FlagsArray } from '../utils/flag-extractor.ts'
+
 //* Getting config file path from command line args or default
 
-import { defaultConfigFile } from '../global-defs.ts'
+import { defaultConfigFile, flags as flagsConsts } from '../global-defs.ts'
 
 interface GetConfigFile {
-   (args: string[]): { configPath?: string, err?: true, err_msg?: string }
-   (args: string[]): { configPath?: string }
+   (flags: FlagsArray): { configPath?: string, err?: true, err_msg?: string }
+   (flags: FlagsArray): { configPath?: string }
 }
 
 //TODO Add config file path memorization by project path
 
-export const getConfigFilePath: GetConfigFile = (args: string[]) => {
+export const getConfigFilePath: GetConfigFile = (flags: FlagsArray) => {
    //* Checking if any args are even provided else simply returning default config file
-   if(!args || !Array.isArray(args)) return { configPath: defaultConfigFile }
+   if(!flags) return { configPath: defaultConfigFile }
 
    //* Checking if any of the args are the custom config path one and if not
    //* returning default
-   const checkCustomConfigPath = args.find(arg => RegExp(/^--config=/).test(arg))
-   if(!checkCustomConfigPath) return { configPath: defaultConfigFile }
-   
-   //* Getting custom config path
-   const customConfigPath = checkCustomConfigPath.replace(/^--config=/, '')
-   
-   //* Checking for empty config flag
-   if(!customConfigPath) return { 
+   const customConfigFileP = flags.find(flag => flag.flagName === flagsConsts.configFileFlag)
+   if(!customConfigFileP) return { configPath: defaultConfigFile }
+
+   //* Checking if is really a path string
+   if(typeof customConfigFileP.flagValue !== 'string') return {
       configPath: undefined, 
       err: true, 
-      err_msg: 'No config file path provided with config flag!' 
+      err_msg: `No config file path has invalid value type: ${typeof customConfigFileP.flagValue}`
    }
-   else return { configPath: customConfigPath }
+   if(customConfigFileP.flagValue.match(/^\/*.+\.(yaml|json)$/)) return {
+      configPath: customConfigFileP.flagValue
+   }
+   else return {
+      configPath: undefined, 
+      err: true, 
+      err_msg: `Path ${customConfigFileP.flagValue} is not a valid path!`
+   }
 }

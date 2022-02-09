@@ -1,10 +1,11 @@
+import type { FlagsArray } from '../utils/flag-extractor.ts'
 import { help } from './help/help-cmd.ts'
 
 export interface Command {
    invoker: string,
    description?: string,
    flags?: CommandFlags
-   run: (args: string[] | undefined) => Promise<{ success: true } | { success: false, err: string }>,
+   run: (flag: FlagsArray) => Promise<{ success: true } | { success: false, err: string }>,
 }
 
 export interface  CommandFlags {

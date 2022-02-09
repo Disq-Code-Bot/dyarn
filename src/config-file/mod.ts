@@ -1,3 +1,5 @@
+import type { FlagsArray } from '../utils/flag-extractor.ts'
+
 //* Assembles all config file functions in one
 import { ConfigOptions } from "./config-types.d.ts";
 import { getConfigsFromFile } from "./get-configs.ts"
@@ -5,15 +7,15 @@ import { getConfigFilePath } from "./get-path.ts"
 import { configsCheck } from './config-check.ts'
 
 interface ConfigFileMainOverload {
-   (args: string[]): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
-   (args: string[]): Promise<{ config?: ConfigOptions }>
+   (flags: FlagsArray): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
+   (flags: FlagsArray): Promise<{ config?: ConfigOptions }>
 }
 
 //TODO Add config file caching inside a .dyarn folder per project
 
-export const configFile: ConfigFileMainOverload = async (args: string []) => {
+export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    //* Looking for config file and it's commands
-   const configPathGet = getConfigFilePath(args)
+   const configPathGet = getConfigFilePath(flags)
    if(configPathGet.err) return {
       err: true,
       err_msg: configPathGet.err_msg,

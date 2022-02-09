@@ -1,10 +1,7 @@
+import type { FlagsArray } from '../utils/flag-extractor.ts'
 import type { CommandFlags } from '../dyarn-internal/mod.ts'
 
-export function checkFlags(args: string[], flagsToCheck: CommandFlags): { success: boolean, err_msg?: string } {
-   //* Getting flags and removing cli agrs characters
-   const flags = args.filter(arg => arg.startsWith('--'))
-      .map(arg => arg.replace('--', '').replace('=', ''))
-   
+export function checkFlags(flags: FlagsArray, flagsToCheck: CommandFlags): { success: boolean, err_msg?: string } {
    //* Checking if flags are required
    if(flagsToCheck.required && (!flags || flags.length < 1)) return {
       success: false,
@@ -13,11 +10,17 @@ export function checkFlags(args: string[], flagsToCheck: CommandFlags): { succes
 
    const filteredMissingFlags: string[] = []
    flagsToCheck.arr.map(flagObj => {
-      if(!flagObj.required && !flags.includes(flagObj.flag)) return
-      if(!flags.includes(flagObj.flag)) return flagObj.flag
+      //* Saving in a boolean if flag is even defined
+      const hasFlag = flags && flags.some(val => val.flagName === flagObj.flag)
+
+      if(!flagObj.required && !hasFlag) return
+      if(!hasFlag) return flagObj.flag
 
       if(flagObj.dependsOnFlag){
-         const missingFlagDeps = flagObj.dependsOnFlag.filter(flag => !flags.includes(flag))
+         const missingFlagDeps = flagObj.dependsOnFlag.filter(flag => {
+            const hasSubFlag = flags && flags.some(val => val.flagName === flag)
+            if(!hasSubFlag) return flag
+         })
          if(missingFlagDeps) return missingFlagDeps
       }
       return
