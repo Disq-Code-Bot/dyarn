@@ -1,35 +1,50 @@
-import { PermsCheck } from './src/permCheck.ts'
-import { defaultConfigFile } from './src/config-file.ts'
-import { ConfigFileCheck } from './src/configFileCheck.ts'
-import { RunApp } from './src/runner.ts'
+import { PermsCheck } from './src/perms/check.ts'
+import { cli  } from './src/cli/mod.ts'
+import { flagExtractor } from './src/utils/flag-extractor.ts'
 
-const command = Deno.args[0] as string
-const args = Deno.args.length !== 1 ?
-   Deno.args.slice().splice(1, Deno.args.length - 1) as string[] 
-   : [''] as string[]
+
+//TODO Add https://deno.land/std@0.97.0/fmt for better logging and colors :)
 
 await (async function main() {
-   try {
+   //* Checking if there is any flag
+   if(!Deno.args || Deno.args.length === 0) {
+      console.error("[ERROR] You must provide at least one argument!")
+      Deno.exit(1)
+   }
+
+   try {   
+      //* Extracting flags and command
+      const flags = flagExtractor(Deno.args)
+      if(flags.err) {
+         console.error(`[ERROR]: ${flags.err}`)
+         Deno.exit(1)
+      }
+
+      const script = flags.cmd as string
+      const args = flags.flags
+
       //* Checking if script has right permissions to run
-      await PermsCheck()
-      
-      //* Getting config file path from command line or default
-      let configFilePath
-      if (Array.isArray(args)) args.forEach(arg => {
-         if(RegExp(/^--config=([^\s].*)/).test(arg)) configFilePath = arg.replace(/^--config=/, '')
-      })
-      else configFilePath = defaultConfigFile
-      
-      //* Checking if config file exists and is has correct format
-      const configFile = await ConfigFileCheck(configFilePath)
+      const permissions = await PermsCheck()
+      if(!permissions.success) {
+         console.error(`[ERROR]: ${permissions.err}`)
+         Deno.exit(1)
+      }
+
+      //TODO Add OS check
+      //TODO Add version check and update recommendation
       
       //* Actually running user's app
-      await RunApp(configFile, command)
+      const cliStatus = await cli(script, args)
+
+      if(!cliStatus.success) {
+         console.error(`[ERROR]: ${cliStatus.err}`)
+         Deno.exit(1)
+      }
    
       //* Voila, finished!
       Deno.exit(0)
    } catch(error) {
-      console.log(`[ERROR]:\n ${error}`)
+      console.log(`[UNEXPECTED ERROR]:\n ${error}`)
       Deno.exit(1)
    }
 })()
