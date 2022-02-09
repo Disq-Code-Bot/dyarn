@@ -13,7 +13,6 @@ If you have any suggestion, don't mind opening an issue please!!
 ### **Technologies**
 Dependency free!
 
-
 ---
 ### **Setup**
 > Note: Deno must be installed in your local environment. Tested on version 1.17, if you spot a problem in other versions, please do not hesitate opening an issue
@@ -78,8 +77,13 @@ Here are the Deno's built in commands (you may also run ``dyarn help`` ).
 - ```--config=```: if you wan't to create a custom dyarn config file or put it in a custom directory and use it when running your custom scripts
 
 ---
+### *Flags*
+- ``-c=[value]``, ``--config=[value]``, ``--config [value]`` and  ``-c [value]``: Sets the custom used config file path. (Be aware that if the flag is used multiple times, only the last one will be considered/used). e.g.: ``dyarn run --config ../disq-code/deno.json``, ``dyarn run --config ./config.json``
+- ~~``--env [value]``, ```--env=[value]``~~ still not available 
+
+---
 ### *Configs file*
-As our objective is to make you life a little easier with Deno commands, adding a custom config file or adding more flags, well... wouldn't help a lot. So by default (you may if you wan't, change this with the: ``` --config={path} ``` flag after dyarn invoker) dyarn uses Deno recommended config file name (and later auto identifiable file by Deno): ```deno.json```. 
+As our objective is to make you life a little easier with Deno commands, adding a custom config file or adding more flags, well... wouldn't help a lot. (if no custom path is provided with the flags ``-c=``, ``--config=``, ``--config`` and  ``-c`` dyarn will search for it's default one ``deno.json``)
 > Note: If more than one config file path is provided, the last one provided will be the used one!
 
 All dyarn options should be passed inside the ```dyarnOptions``` keys inside the deno.json file. 

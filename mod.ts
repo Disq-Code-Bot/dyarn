@@ -19,7 +19,6 @@ await (async function main() {
 
       //TODO Add OS check
       //TODO Add version check and update recommendation
-      //TODO add flags to object[] to make it easier to check/use flags
       const flags = flagExtractor(Deno.args)
       if(flags.err) {
          console.error(`[ERROR]: ${flags.err}`)

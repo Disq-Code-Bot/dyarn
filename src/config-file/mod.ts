@@ -27,7 +27,7 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    try {
       await Deno.stat(configPath)
    } catch (err) {
-      console.log(`[ERROR] The provided/default config file path "${configPath}" was not found!`)
+      console.error(`[ERROR] The provided/default config file path "${configPath}" was not found!`)
       Deno.exit(1)
    }
    if(!(await Deno.stat(configPath)).isFile) return {
