@@ -17,7 +17,6 @@ interface ConfigFileMainOverload {
 }
 
 export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
-   
    //* Looking for config file and it's commands
    const configPathGet = getConfigFilePath(flags)
    if(configPathGet.err) return {
@@ -28,29 +27,32 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    const configPath = configPathGet.configPath as string
    
    //* Checking for config cache
-   const cacheExistsResult = await cacheExists(configPath)
-   
-   if(!cacheExistsResult.success) {
-      console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
-   } 
-   
-   if(!!cacheExistsResult.hasCache && !!cacheExistsResult.isValid) {
-      const getCacheResult = await getCache()
-      console.info(`[INFO] Using cached config file.`)
-      if(!getCacheResult.success) {
-         console.warn(`[WARN] Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
-      } else return {
-         config: getCacheResult.cache
+   const noCacheFlag = flags!.find(flag => (flag.flagName === 'no-cache' && flag.flagValue === true))
+   if(!flags || !noCacheFlag) {
+      const cacheExistsResult = await cacheExists(configPath)
+      
+      if(!cacheExistsResult.success) {
+         console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
+      } 
+
+      if(!!cacheExistsResult.hasCache && !!cacheExistsResult.isValid) {
+         const getCacheResult = await getCache()
+         console.info(`[INFO] Using cached config file.`)
+         if(!getCacheResult.success) {
+            console.warn(`[WARN] Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
+         } else return {
+            config: getCacheResult.cache
+         }
       }
-   }
 
-   if(!cacheExistsResult.isValid) {
-      const cachePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+      if(!cacheExistsResult.isValid && !!cacheExistsResult.hasCache) {
+         const cachePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
 
-      const invalidateCacheResult = await invalidateCache(cachePath)
+         const invalidateCacheResult = await invalidateCache(cachePath)
 
-      if(!invalidateCacheResult.success) {
-         console.warn(`[WARN] Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
+         if(!invalidateCacheResult.success) {
+            console.warn(`[WARN] Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
+         }
       }
    }
 
@@ -86,10 +88,12 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    }
 
    //* Saving cache
-   const configFileStat = await Deno.stat(configPath)
-   const cache = await createCache(configsFromFile.config!, configFileStat, configPath)
-   if(!cache.success) {
-      console.warn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`)
+   if(!flags || !noCacheFlag) {
+      const configFileStat = await Deno.stat(configPath)
+      const cache = await createCache(configsFromFile.config!, configFileStat, configPath)
+      if(!cache.success) {
+         console.warn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`)
+      }
    }
 
    //* Returning configs

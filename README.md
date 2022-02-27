@@ -82,6 +82,7 @@ Here are the Deno's built in commands (you may also run ``dyarn help`` ).
 ### *Flags*
 - ``-c=[value]``, ``--config=[value]``, ``--config [value]`` and  ``-c [value]``: Sets the custom used config file path. (Be aware that if the flag is used multiple times, only the last one will be considered/used). e.g.: ``dyarn run --config ../disq-code/deno.json``, ``dyarn run --config ./config.json``
 - ~~``--env [value]``, ```--env=[value]``~~ still not available 
+- ``--no-cache``, ```--no-cache=[boolean]``: Opts you out of config file caching.
 
 ---
 ### *Configs file*
