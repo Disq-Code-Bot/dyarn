@@ -10,3 +10,11 @@ export interface ConfigOptions {
    mainFile?: string
    scripts: Record<string, ScriptsType>
 }
+
+export interface ConfigFileCacheType {
+   cache: ConfigOptions
+   configFileModDate: string
+   cacheDate: string
+   configFilePath: string
+   cacheFilePath: string
+}
