@@ -2,23 +2,25 @@ import {
    dyarnProjectDirPath
 } from '../global-defs.ts'
 
-export function checkDyarnProjectDir(): {
+export async function checkDyarnProjectDir(): Promise<{
    success: true
    err: undefined
 } | {
    success: false,
    err: string
-} {
-   const dir = Deno.statSync(dyarnProjectDirPath)
-
-   if (!dir || !dir.isDirectory) return {
-      success: false,
-      err: `The directory "${dyarnProjectDirPath}" doesn't exist!`
+}> {
+   try {
+      await Deno.stat(dyarnProjectDirPath)
+      return {
+         success: true,
+         err: undefined
+      }
    }
-
-   return {
-      success: true,
-      err: undefined
+   catch (err) {
+      return {
+         success: false,
+         err: `There is no dyarn dir at ${dyarnProjectDirPath}`
+      }
    }
 }
 
