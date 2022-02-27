@@ -10,6 +10,7 @@ export * from './values/perms.ts'
 
 export const configType = {
    "_mainFile": "string",
+   "_noCache": true,
    "_{}scripts": { 
       "invoker": "string",
       "_flags": "string",

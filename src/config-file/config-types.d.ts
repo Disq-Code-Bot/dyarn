@@ -8,6 +8,7 @@ export interface ScriptsType {
 
 export interface ConfigOptions {
    mainFile?: string
+   noCache?: boolean
    scripts: Record<string, ScriptsType>
 }
 

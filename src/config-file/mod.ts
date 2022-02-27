@@ -88,7 +88,7 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    }
 
    //* Saving cache
-   if(!flags || !noCacheFlag) {
+   if((!flags || !noCacheFlag) && !configsFromFile.config?.noCache) {
       const configFileStat = await Deno.stat(configPath)
       const cache = await createCache(configsFromFile.config!, configFileStat, configPath)
       if(!cache.success) {
