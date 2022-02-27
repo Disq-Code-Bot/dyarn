@@ -16,8 +16,6 @@ interface ConfigFileMainOverload {
    (flags: FlagsArray): Promise<{ config?: ConfigOptions }>
 }
 
-//TODO Add config file caching inside a .dyarn folder per project
-
 export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    
    //* Looking for config file and it's commands
@@ -38,7 +36,7 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    
    if(!!cacheExistsResult.hasCache && !!cacheExistsResult.isValid) {
       const getCacheResult = await getCache()
-      console.log(`[INFO] Using cached config file.`)
+      console.info(`[INFO] Using cached config file.`)
       if(!getCacheResult.success) {
          console.warn(`[WARN] Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
       } else return {
