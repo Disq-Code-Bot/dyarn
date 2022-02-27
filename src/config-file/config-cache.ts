@@ -29,9 +29,8 @@ export async function cacheExists(): Promise<{
       isValid: false,
       err: undefined
    }
-
    //* Checking if cache file exists
-   const cacheFilePath = new URL(configFileCacheFileName, `${import.meta.url}/${dyarnProjectDirPath}`)
+   const cacheFilePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
 
    try {
       const file = await Deno.stat(cacheFilePath)
@@ -127,7 +126,7 @@ export async function createCache(config: ConfigOptions, configFileStat: Deno.Fi
    }
 
    //* Creating config cache file
-   const filePath = new URL(configFileCacheFileName, `${import.meta.url}/${dyarnProjectDirPath}`)
+   const filePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
    const file = await Deno.create(filePath)
 
    //* Getting config file info to properly check cache validity later in case it is changed
@@ -166,7 +165,7 @@ export async function getCache(): Promise<{
    cache: undefined
    err: string
 }> {
-   const cacheFilePath = new URL(configFileCacheFileName, `${import.meta.url}/${dyarnProjectDirPath}`)
+   const cacheFilePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
 
    try {
       const file = await Deno.readFileSync(cacheFilePath)

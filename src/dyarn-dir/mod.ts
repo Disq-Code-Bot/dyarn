@@ -9,14 +9,20 @@ export async function checkDyarnProjectDir(): Promise<{
    success: false,
    err: string
 }> {
+   const dyarnProjectUrl = `${Deno.cwd()}/${dyarnProjectDirPath}`
    try {
-      await Deno.stat(dyarnProjectDirPath)
+      const dir = await Deno.stat(dyarnProjectUrl)
+
+      if(!dir.isDirectory) return {
+         success: false,
+         err: `Weirdly .dyarn folder on ${dyarnProjectUrl} is not a directory...`
+      }
       return {
          success: true,
          err: undefined
       }
    }
-   catch (err) {
+   catch {
       return {
          success: false,
          err: `There is no dyarn dir at ${dyarnProjectDirPath}`
@@ -32,7 +38,7 @@ export async function createDyarnProjectDir(): Promise<{
    err: string
 }> {
    const dir = await Deno.mkdir(
-      new URL(dyarnProjectDirPath, import.meta.url).pathname, 
+      `${Deno.cwd()}/${dyarnProjectDirPath}`, 
       { recursive: true }
    ).catch(err => 
       `Strange... something unexpected occurred when trying to create a .dyarn directory on your project's dir.\n [ERR MESSAGE]: ${err}`)
