@@ -5,6 +5,7 @@ import { ConfigOptions } from "./config-types.d.ts";
 import { getConfigsFromFile } from "./get-configs.ts"
 import { getConfigFilePath } from "./get-path.ts"
 import { configsCheck } from './config-check.ts'
+import { cacheExists, getCache, createCache } from './config-cache.ts'
 
 interface ConfigFileMainOverload {
    (flags: FlagsArray): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
@@ -23,10 +24,27 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    }
    const configPath = configPathGet.configPath as string
 
+   //* Checking for config cache
+   const cacheExistsResult = await cacheExists()
+
+   if(!cacheExistsResult.success) {
+      console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
+   } 
+   
+   if(!!cacheExistsResult.hasCache && !!cacheExistsResult.isValid) {
+      const getCacheResult = await getCache()
+
+      if(!getCacheResult.success) {
+         console.warn(`[WARN] Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
+      } else return {
+         config: getCacheResult.cache
+      }
+   }
+
    //* Checking if config file exists
    try {
       await Deno.stat(configPath)
-   } catch (err) {
+   } catch {
       console.error(`[ERROR] The provided/default config file path "${configPath}" was not found!`)
       Deno.exit(1)
    }
@@ -50,6 +68,14 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
       err: true,
       err_msg: checks.err,
       config: undefined
+   }
+
+   //* Saving cache
+   const configFileStat = await Deno.stat(configPath)
+   const cache = await createCache(configsFromFile.config!, configFileStat, configPath)
+
+   if(!cache.success) {
+      console.warn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`)
    }
 
    //* Returning configs
