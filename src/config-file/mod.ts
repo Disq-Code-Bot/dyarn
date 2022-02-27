@@ -1,11 +1,15 @@
 import type { FlagsArray } from '../utils/flag-extractor.ts'
+import {
+   dyarnProjectDirPath,
+   configFileCacheFileName
+} from '../global-defs.ts'
 
 //* Assembles all config file functions in one
 import { ConfigOptions } from "./config-types.d.ts";
 import { getConfigsFromFile } from "./get-configs.ts"
 import { getConfigFilePath } from "./get-path.ts"
 import { configsCheck } from './config-check.ts'
-import { cacheExists, getCache, createCache } from './config-cache.ts'
+import { cacheExists, getCache, createCache, invalidateCache } from './config-cache.ts'
 
 interface ConfigFileMainOverload {
    (flags: FlagsArray): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
@@ -15,6 +19,7 @@ interface ConfigFileMainOverload {
 //TODO Add config file caching inside a .dyarn folder per project
 
 export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
+   
    //* Looking for config file and it's commands
    const configPathGet = getConfigFilePath(flags)
    if(configPathGet.err) return {
@@ -23,17 +28,17 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
       config: undefined
    }
    const configPath = configPathGet.configPath as string
-
+   
    //* Checking for config cache
-   const cacheExistsResult = await cacheExists()
-
+   const cacheExistsResult = await cacheExists(configPath)
+   
    if(!cacheExistsResult.success) {
       console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
    } 
    
    if(!!cacheExistsResult.hasCache && !!cacheExistsResult.isValid) {
       const getCacheResult = await getCache()
-
+      console.log(`[INFO] Using cached config file.`)
       if(!getCacheResult.success) {
          console.warn(`[WARN] Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
       } else return {
@@ -41,12 +46,24 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
       }
    }
 
+   if(!cacheExistsResult.isValid) {
+      const cachePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+
+      const invalidateCacheResult = await invalidateCache(cachePath)
+
+      if(!invalidateCacheResult.success) {
+         console.warn(`[WARN] Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
+      }
+   }
+
    //* Checking if config file exists
    try {
       await Deno.stat(configPath)
    } catch {
-      console.error(`[ERROR] The provided/default config file path "${configPath}" was not found!`)
-      Deno.exit(1)
+      return {
+         err: true,
+         err_msg: `The provided/default config file path '${configPath}' was not found!`
+      }
    }
    if(!(await Deno.stat(configPath)).isFile) return {
       err: true,
@@ -73,7 +90,6 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    //* Saving cache
    const configFileStat = await Deno.stat(configPath)
    const cache = await createCache(configsFromFile.config!, configFileStat, configPath)
-
    if(!cache.success) {
       console.warn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`)
    }

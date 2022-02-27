@@ -9,7 +9,7 @@ import {
    configFileCacheFileName
 } from '../global-defs.ts'
 
-export async function cacheExists(): Promise<{
+export async function cacheExists(configFilePath: string): Promise<{
    success: true
    hasCache: boolean
    isValid: boolean
@@ -50,12 +50,12 @@ export async function cacheExists(): Promise<{
 
       //* Checking if cache file is valid comparing to the original config file mod date
       try {
-         const originalConfigFile = await Deno.stat(cacheFilePath)
+         const originalConfigFile = await Deno.stat(configFilePath)
          if(!originalConfigFile.mtime) return {
             success: false,
             hasCache: undefined,
             isValid: undefined,
-            err: `Weirdly original config file on ${cacheFilePath} does not have a mtime... Could not check cache validity.`
+            err: `Weirdly original config file on ${configFilePath} does not have a mtime... Could not check cache validity.`
          }
 
          //* Finally checking if cache file is valid
