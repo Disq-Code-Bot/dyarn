@@ -1,4 +1,4 @@
-import type { FlagsArray } from '../utils/flag-extractor.ts'
+import type { CLIInfo } from '../../types/cli.d.ts'
 import {
    dyarnProjectDirPath,
    configFileCacheFileName
@@ -12,13 +12,13 @@ import { configsCheck } from './config-check.ts'
 import { cacheExists, getCache, createCache, invalidateCache } from './config-cache.ts'
 
 interface ConfigFileMainOverload {
-   (flags: FlagsArray): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
-   (flags: FlagsArray): Promise<{ config?: ConfigOptions }>
+   (cliInfo: CLIInfo): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
+   (cliInfo: CLIInfo): Promise<{ config?: ConfigOptions }>
 }
 
-export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
+export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
    //* Looking for config file and it's commands
-   const configPathGet = getConfigFilePath(flags)
+   const configPathGet = getConfigFilePath(cliInfo.flags)
    if(configPathGet.err) return {
       err: true,
       err_msg: configPathGet.err_msg,
@@ -27,9 +27,9 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    const configPath = configPathGet.configPath as string
    
    //* Checking for config cache
-   const noCacheFlag = flags!.find(flag => (flag.flagName === 'no-cache' && flag.flagValue === true))
-   if(!flags || !noCacheFlag) {
-      const cacheExistsResult = await cacheExists(configPath)
+   const noCacheFlag = cliInfo.flags!.find(flag => (flag.flagName === 'no-cache' && flag.flagValue === true))
+   if(!cliInfo.flags || !noCacheFlag) {
+      const cacheExistsResult = await cacheExists(configPath, cliInfo)
       
       if(!cacheExistsResult.success) {
          console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
@@ -88,9 +88,9 @@ export const configFile: ConfigFileMainOverload = async (flags: FlagsArray) => {
    }
 
    //* Saving cache
-   if((!flags || !noCacheFlag) && !configsFromFile.config?.noCache) {
+   if((!cliInfo.flags || !noCacheFlag) && !configsFromFile.config?.noCache) {
       const configFileStat = await Deno.stat(configPath)
-      const cache = await createCache(configsFromFile.config!, configFileStat, configPath)
+      const cache = await createCache(configsFromFile.config!, configFileStat, configPath, cliInfo)
       if(!cache.success) {
          console.warn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`)
       }

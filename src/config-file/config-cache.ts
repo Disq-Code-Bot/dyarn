@@ -1,3 +1,4 @@
+import type { CLIInfo } from '../../types/cli.d.ts'
 import type { ConfigOptions, ConfigFileCacheType } from './config-types.d.ts'
 import {
    checkDyarnProjectDir,
@@ -9,7 +10,7 @@ import {
    configFileCacheFileName
 } from '../global-defs.ts'
 
-export async function cacheExists(configFilePath: string): Promise<{
+export async function cacheExists(configFilePath: string, cliInfo: CLIInfo): Promise<{
    success: true
    hasCache: boolean
    isValid: boolean
@@ -30,7 +31,7 @@ export async function cacheExists(configFilePath: string): Promise<{
       err: undefined
    }
    //* Checking if cache file exists
-   const cacheFilePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+   const cacheFilePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
 
    try {
       const file = await Deno.stat(cacheFilePath)
@@ -105,7 +106,7 @@ export async function cacheExists(configFilePath: string): Promise<{
    }
 }
 
-export async function createCache(config: ConfigOptions, configFileStat: Deno.FileInfo, configFilePath: ConfigFileCacheType['configFilePath']): Promise<{
+export async function createCache(config: ConfigOptions, configFileStat: Deno.FileInfo, configFilePath: ConfigFileCacheType['configFilePath'], cliInfo: CLIInfo): Promise<{
    success: true,
    err: undefined
 } | {
@@ -126,7 +127,7 @@ export async function createCache(config: ConfigOptions, configFileStat: Deno.Fi
    }
 
    //* Creating config cache file
-   const filePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+   const filePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
    const file = await Deno.create(filePath)
 
    //* Getting config file info to properly check cache validity later in case it is changed
