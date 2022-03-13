@@ -22,7 +22,7 @@ export async function cacheExists(configFilePath: string, cliInfo: CLIInfo): Pro
    err: string
 }> {
    //* Checking if dyarn project dir exists
-   const checkDyarnDir = await checkDyarnProjectDir()
+   const checkDyarnDir = await checkDyarnProjectDir(cliInfo)
 
    if(!checkDyarnDir.success) return {
       success: true,
@@ -114,11 +114,11 @@ export async function createCache(config: ConfigOptions, configFileStat: Deno.Fi
    err: string
 }> {
    //* Checking if dyarn project dir exists
-   const checkDyarnDir = await checkDyarnProjectDir()
+   const checkDyarnDir = await checkDyarnProjectDir(cliInfo)
    
    //* If it doesn't exist, create it
    if(!checkDyarnDir.success) {
-      const dirCreate = await createDyarnProjectDir()
+      const dirCreate = await createDyarnProjectDir(cliInfo)
 
       if(!dirCreate.success) return {
          success: false,
