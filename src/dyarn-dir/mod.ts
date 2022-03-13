@@ -1,15 +1,17 @@
+import type { CLIInfo } from '../../types/cli.d.ts'
+
 import {
    dyarnProjectDirPath
 } from '../global-defs.ts'
 
-export async function checkDyarnProjectDir(): Promise<{
+export async function checkDyarnProjectDir(cliInfo: CLIInfo): Promise<{
    success: true
    err: undefined
 } | {
    success: false,
    err: string
 }> {
-   const dyarnProjectUrl = `${Deno.cwd()}/${dyarnProjectDirPath}`
+   const dyarnProjectUrl = `${cliInfo.cwd}/${dyarnProjectDirPath}`
    try {
       const dir = await Deno.stat(dyarnProjectUrl)
 
@@ -30,7 +32,7 @@ export async function checkDyarnProjectDir(): Promise<{
    }
 }
 
-export async function createDyarnProjectDir(): Promise<{
+export async function createDyarnProjectDir(cliInfo: CLIInfo): Promise<{
    success: true
    err: undefined
 } | {
@@ -38,7 +40,7 @@ export async function createDyarnProjectDir(): Promise<{
    err: string
 }> {
    const dir = await Deno.mkdir(
-      `${Deno.cwd()}/${dyarnProjectDirPath}`, 
+      `${cliInfo.cwd}/${dyarnProjectDirPath}`, 
       { recursive: true }
    ).catch(err => 
       `Strange... something unexpected occurred when trying to create a .dyarn directory on your project's dir.\n [ERR MESSAGE]: ${err}`)
