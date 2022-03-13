@@ -1,9 +1,5 @@
 import type { CLIInfo } from '../../types/cli.d.ts'
 import type { ConfigOptions, ConfigFileCacheType } from './config-types.d.ts'
-import {
-   checkDyarnProjectDir,
-   createDyarnProjectDir
-} from '../dyarn-dir/mod.ts'
 
 import {
    dyarnProjectDirPath,
@@ -21,15 +17,6 @@ export async function cacheExists(configFilePath: string, cliInfo: CLIInfo): Pro
    isValid: undefined
    err: string
 }> {
-   //* Checking if dyarn project dir exists
-   const checkDyarnDir = await checkDyarnProjectDir(cliInfo)
-
-   if(!checkDyarnDir.success) return {
-      success: true,
-      hasCache: false,
-      isValid: false,
-      err: undefined
-   }
    //* Checking if cache file exists
    const cacheFilePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
 
@@ -113,19 +100,6 @@ export async function createCache(config: ConfigOptions, configFileStat: Deno.Fi
    success: false,
    err: string
 }> {
-   //* Checking if dyarn project dir exists
-   const checkDyarnDir = await checkDyarnProjectDir(cliInfo)
-   
-   //* If it doesn't exist, create it
-   if(!checkDyarnDir.success) {
-      const dirCreate = await createDyarnProjectDir(cliInfo)
-
-      if(!dirCreate.success) return {
-         success: false,
-         err: dirCreate.err
-      }
-   }
-
    //* Creating config cache file
    const filePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
    const file = await Deno.create(filePath)

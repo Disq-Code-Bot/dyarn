@@ -1,8 +1,14 @@
 import type { CLIInfo } from '../../types/cli.d.ts'
+
 import {
    dyarnProjectDirPath,
    configFileCacheFileName
 } from '../global-defs.ts'
+
+import {
+   checkDyarnProjectDir,
+   createDyarnProjectDir
+} from '../dyarn-dir/mod.ts'
 
 //* Assembles all config file functions in one
 import { ConfigOptions } from "./config-types.d.ts";
@@ -27,8 +33,11 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
    const configPath = configPathGet.configPath as string
    
    //* Checking for config cache
+   //* Checking if dyarn project dir exists
+   const checkDyarnDir = await checkDyarnProjectDir(cliInfo)
+
    const noCacheFlag = cliInfo.flags!.find(flag => (flag.flagName === 'no-cache' && flag.flagValue === true))
-   if(!cliInfo.flags || !noCacheFlag) {
+   if(checkDyarnDir.success && (!cliInfo.flags || !noCacheFlag)) {
       const cacheExistsResult = await cacheExists(configPath, cliInfo)
       
       if(!cacheExistsResult.success) {
@@ -89,6 +98,14 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
 
    //* Saving cache
    if((!cliInfo.flags || !noCacheFlag) && !configsFromFile.config?.noCache) {
+      
+      //* Checking if dyarn project dir exists or creating it
+      if(!checkDyarnDir.success) {
+         const createDyarnDirResult = await createDyarnProjectDir(cliInfo)
+         if(!createDyarnDirResult.success) {
+            console.warn(`[WARN] Dyarn project dir creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [DIR ERR]: ${createDyarnDirResult.err}`)
+         }
+      }
       const configFileStat = await Deno.stat(configPath)
       const cache = await createCache(configsFromFile.config!, configFileStat, configPath, cliInfo)
       if(!cache.success) {
