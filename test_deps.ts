@@ -1,5 +1,6 @@
 export {
-   assert
+   assert,
+   assertEquals
 } from 'https://deno.land/std/testing/asserts.ts'
 export { 
    describe, 
