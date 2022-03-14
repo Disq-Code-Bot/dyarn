@@ -188,3 +188,23 @@ export const testsValidityCheckCases: {
       },
    },
 ]
+
+export const testsInvalidateCases: {
+   testName: string
+   cacheFilePath: string
+   fileRemovalSuccess: boolean,
+   success: boolean
+}[] = [
+   {
+      testName: 'Cache exists and invalidate succeeds',
+      cacheFilePath: cacheMockFilePath,
+      fileRemovalSuccess: true,
+      success: true,
+   },
+   {
+      testName: 'Cache does not exist',
+      cacheFilePath: cacheMockFilePath,
+      fileRemovalSuccess: false,
+      success: false,
+   },
+]
