@@ -1,11 +1,10 @@
 import type { FlagsArray } from '../utils/flag-extractor.ts'
 
-import { issuesUrl, dyarnProjectDirPath, configFileCacheFileName } from '../global-defs.ts'
+import { issuesUrl } from '../global-defs.ts'
 
 //* Commands
 import { help } from './help/help-cmd.ts'
 import { getVersion } from './version.ts'
-import { invalidateCache } from '../config-file/config-cache.ts'
 
 export interface Command {
    invoker: string,
@@ -46,7 +45,7 @@ export const commandsNoHelp: Command[] = [
             },
          ],
       },
-      run: async () => { await console.log('Unavailable'); return {success: true} }
+      run: async () => { await console.log(''); return {success: true} }
    },
    {
       invoker: 'version',
@@ -67,25 +66,6 @@ export const commandsNoHelp: Command[] = [
          ],
       },
       run: async (flags) => { const versionRun = await getVersion(flags); return versionRun },
-   },
-   {
-      invoker: 'invalidate-cfg-cache',
-      description: 'Invalidates the config file cache',
-      run: async () => {
-         await console.log(`  Invalidating config file cache...`)
-         const cachePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
-         const invalidateCacheResult = await invalidateCache(cachePath)
-         
-         if(!invalidateCacheResult.success) return {
-            success: false,
-            err: `Error invalidating config file cache:\n ${invalidateCacheResult.err}`,
-         }
-
-         console.log(`   Successfully invalidated config file cache!`)
-         return {
-            success: true,
-         }
-      }
    }
 ]
 

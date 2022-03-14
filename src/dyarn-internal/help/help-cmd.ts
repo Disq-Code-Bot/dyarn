@@ -1,7 +1,5 @@
 import { commandsNoHelp } from '../mod.ts'
 
-//TODO fix, wrong flag '-a' being used, should be: '-l' or '--list'
-
 export const help = async (): Promise<{
    success: true
 } | {

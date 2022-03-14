@@ -1,6 +1,6 @@
 //* Checking if script has right permissions to run
 
-import { neededPerms } from '../global-defs.ts'
+const neededPerms = ["read", "net", "run"]
 
 export async function PermsCheck(): Promise<{
    success: true
