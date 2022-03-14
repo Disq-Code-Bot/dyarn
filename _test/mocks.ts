@@ -35,7 +35,7 @@ export const denoJsonMock1 = {
 
 export const denoJsonCacheMock1 = {
    cache: denoJsonMock1,
-   configFileModDate: new Date(),
+   configFileModDate: new Date().toISOString(),
    configFilePath: './deno.json',
    cacheDate: new Date().toISOString(),
    cacheFilePath: cacheMockFilePath,

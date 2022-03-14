@@ -35,7 +35,6 @@ describe({
          name: testCase.testName,
       }, async () => {
          const writeSpy: Spy<Deno.File['write']> = spy((_write: Uint8Array): Promise<number> => {
-            console.log('writeSpy called with: ', JSON.stringify(new TextDecoder().decode(_write)))
             return Promise.resolve(1)
          })
          const closeSpy: Spy<Deno.File['write']> = spy((_write: Uint8Array): Promise<number> => {
