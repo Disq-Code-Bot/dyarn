@@ -37,7 +37,7 @@ describe({
          }
       
          //* Mocking Deno's readFile()
-         globalThis.Deno.readFile = async (path: string | URL): Promise<Uint8Array> => {
+         globalThis.Deno.readFile = async (_path: string | URL): Promise<Uint8Array> => {
             await new Promise(resolve => setTimeout(resolve, 1))
             
             return new TextEncoder().encode(JSON.stringify(testCase.denoMocks.denoReadFile))

@@ -1,6 +1,7 @@
 export {
    assert,
-   assertEquals
+   assertEquals,
+   assertStringIncludes
 } from 'https://deno.land/std/testing/asserts.ts'
 export { 
    describe, 
