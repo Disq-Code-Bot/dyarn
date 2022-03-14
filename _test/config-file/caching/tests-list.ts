@@ -216,7 +216,7 @@ export const testsInvalidateCases: {
    },
 ]
 
-//* Test ist for the config file cache creation function
+//* Test list for the config file cache creation function
 export const testsCreateCacheCases: {
    testName: string
    configFilePath: ConfigFileCacheType['cacheFilePath']
@@ -245,4 +245,23 @@ export const testsCreateCacheCases: {
       },
       success: true
    },
+]
+
+//* Test list for config file reading function
+export const testsReadConfigFileCases: {
+   testName: string
+   cliInfo: CLIInfo
+   configExpected: ConfigOptions
+   cacheFileContent: ConfigFileCacheType
+   success: boolean
+}[] = [
+   {
+      testName: 'Cache get succeeds',
+      cliInfo: {
+         cwd: '.',
+      } as CLIInfo,
+      configExpected: denoJsonMock1,
+      cacheFileContent: denoJsonCacheMock1,
+      success: true,
+   }
 ]
