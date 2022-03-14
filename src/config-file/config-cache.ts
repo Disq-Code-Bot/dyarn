@@ -104,7 +104,7 @@ export async function createCache(config: ConfigOptions, configFileStat: Deno.Fi
       cache: config,
       configFileModDate: configFileStat.mtime?.toISOString(),
       configFilePath: configFilePath,
-      cacheDate: new Date().toISOString(),
+      cacheDate: cliInfo.currDate.toISOString(),
       cacheFilePath: filePath.toString(),
    }
 
