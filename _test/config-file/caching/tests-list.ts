@@ -9,7 +9,7 @@ import {
 
 const unusedDenoStatVars = { blksize: 0, blocks: 0, dev: 0, gid: 0, ino: 0, mode: 0, nlink: 0, rdev: 0, uid: 0, size: 0 }
 
-export const testsCases: {
+export const testsValidityCheckCases: {
    testName: string
    configFilePath: string
    cliInfo: Partial<CLIInfo>
