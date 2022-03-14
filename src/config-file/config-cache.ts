@@ -62,19 +62,6 @@ export async function cacheExists(configFilePath: string, cliInfo: CLIInfo): Pro
             err: undefined
          }
       } catch {
-         //* Cache file is not valid anymore as the original config file does not exist anymore
-
-         //* Invalidating cache file
-         const cacheInvalidate = await invalidateCache(cacheFilePath)
-
-         //* In case of error invalidating cache file
-         if(!cacheInvalidate.success) return {
-            success: false,
-            hasCache: undefined,
-            isValid: undefined,
-            err: `Cache file is invalid and could not be invalidated/removed.\n [ERR MESSAGE]: ${cacheInvalidate.err}`
-         } 
-
          return {
             success: true,
             hasCache: true,
