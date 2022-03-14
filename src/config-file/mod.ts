@@ -37,9 +37,8 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
    const checkDyarnDir = await checkDyarnProjectDir(cliInfo)
 
    const noCacheFlag = cliInfo.flags!.find(flag => (flag.flagName === 'no-cache' && flag.flagValue === true))
+   let cacheExistsResult = await cacheExists(configPath, cliInfo)
    if(checkDyarnDir.success && (!cliInfo.flags || !noCacheFlag)) {
-      const cacheExistsResult = await cacheExists(configPath, cliInfo)
-      
       if(!cacheExistsResult.success) {
          console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
       } 
@@ -55,7 +54,7 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
       }
 
       if(!cacheExistsResult.isValid && !!cacheExistsResult.hasCache) {
-         const cachePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+         const cachePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
 
          const invalidateCacheResult = await invalidateCache(cachePath)
 
@@ -97,8 +96,8 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
    }
 
    //* Saving cache
-   if((!cliInfo.flags || !noCacheFlag) && !configsFromFile.config?.noCache) {
-      
+   const shouldHaveCacheFile = (!cliInfo.flags || !noCacheFlag) && !configsFromFile.config?.noCache
+   if(shouldHaveCacheFile) {
       //* Checking if dyarn project dir exists or creating it
       if(!checkDyarnDir.success) {
          const createDyarnDirResult = await createDyarnProjectDir(cliInfo)
@@ -110,6 +109,16 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
       const cache = await createCache(configsFromFile.config!, configFileStat, configPath, cliInfo)
       if(!cache.success) {
          console.warn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`)
+      }
+   }
+
+   //* Removing cache file if it exists but shouldn't
+   if(!shouldHaveCacheFile) {
+      const cachePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+      const invalidateCacheResult = await invalidateCache(cachePath)
+
+      if(!invalidateCacheResult.success) {
+         console.warn(`[WARN] Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
       }
    }
 
