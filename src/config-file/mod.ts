@@ -44,7 +44,7 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
       } 
 
       if(!!cacheExistsResult.hasCache && !!cacheExistsResult.isValid) {
-         const getCacheResult = await getCache()
+         const getCacheResult = await getCache(cliInfo)
          console.info(`[INFO] Using cached config file.`)
          if(!getCacheResult.success) {
             console.warn(`[WARN] Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)

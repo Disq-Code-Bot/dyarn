@@ -108,7 +108,9 @@ export async function createCache(config: ConfigOptions, configFileStat: Deno.Fi
       cacheFilePath: filePath.toString(),
    }
 
+   //* Writing onto and closing the file
    const fileWrite = await file.write(new TextEncoder().encode(JSON.stringify(writeFileContent)))
+   file.close()
 
    if(!fileWrite) return {
       success: false,
@@ -121,7 +123,7 @@ export async function createCache(config: ConfigOptions, configFileStat: Deno.Fi
    }
 }
 
-export async function getCache(): Promise<{
+export async function getCache(cliInfo: CLIInfo): Promise<{
    success: true
    cache: ConfigOptions
    err: undefined
@@ -130,7 +132,7 @@ export async function getCache(): Promise<{
    cache: undefined
    err: string
 }> {
-   const cacheFilePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+   const cacheFilePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
 
    try {
       const file = await Deno.readFileSync(cacheFilePath)
