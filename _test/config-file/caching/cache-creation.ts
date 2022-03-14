@@ -69,7 +69,7 @@ describe({
                cache: testCase.config,
                configFileModDate: testCase.configFileStat.mtime?.toISOString(),
                configFilePath: testCase.configFilePath,
-               cacheDate: new Date().toISOString(),
+               cacheDate: testCase.cliInfo.currDate.toISOString(),
                cacheFilePath: testCase.cacheFilePath,
             }
             

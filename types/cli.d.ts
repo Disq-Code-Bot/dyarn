@@ -4,6 +4,7 @@ import type {
 } from '../src/utils/flag-extractor.ts'
 
 export interface CLIInfo {
+   currDate: Date
    flags?: FlagsArray
    cmd?: CMD
    cwd?: string

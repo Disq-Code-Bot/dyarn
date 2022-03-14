@@ -20,7 +20,7 @@ import {
 } from './tests-list.ts'
 
 describe({
-   name: 'VALIDITY',
+   name: 'GET CACHE',
    suite: configCacheSuite,
    
 }, async () => {
