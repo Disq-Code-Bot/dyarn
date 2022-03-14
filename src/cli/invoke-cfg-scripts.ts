@@ -1,17 +1,17 @@
-import type { FlagsArray } from '../utils/flag-extractor.ts'
-import { configFile, getScripts } from '../config-file/mod.ts'
 import type { RunOptions } from '../../types/deno-types.d.ts'
+import type { CLIInfo } from '../../types/cli.d.ts'
+import { configFile, getScripts } from '../config-file/mod.ts'
 import { defaultFile } from '../global-defs.ts'
 
 interface InvokeCfgScriptsOverload {
-   (script: string, flags: FlagsArray): Promise<{ success: boolean, cmdData?: RunOptions, hasScripts?: boolean, err_msg?: string }>
+   (cliInfo: CLIInfo): Promise<{ success: boolean, cmdData?: RunOptions, hasScripts?: boolean, err_msg?: string }>
 }
 
 //* Get config file and check for config scripts
 export const invokeCfgScripts: InvokeCfgScriptsOverload = 
-   async (script: string, flags: FlagsArray) => {
+   async (cliInfo: CLIInfo) => {
    //* Getting config 
-   const configs = await configFile(flags)
+   const configs = await configFile(cliInfo)
 
    if(configs.err) return {
       success: false,
@@ -27,13 +27,13 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
    }
 
    //* Checking if script exists
-   if(!scripts.scripts[script]) return {
+   if(!scripts.scripts[cliInfo.cmd!]) return {
       success: false,
-      err_msg: `Script "${script}" was not found in config file`
+      err_msg: `Script "${cliInfo.cmd!}" was not found in config file`
    }
 
    //* Getting script data
-   const scriptData = scripts.scripts[script]
+   const scriptData = scripts.scripts[cliInfo.cmd!]
 
    //* Getting script runtime configs: file, flags, custom file, app flags 
    const runFile = `${Deno.cwd()}/${scriptData.customFile ?? configs.config?.mainFile ?? defaultFile}`

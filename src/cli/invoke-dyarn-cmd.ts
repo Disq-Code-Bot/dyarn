@@ -1,15 +1,15 @@
-import type { FlagsArray } from '../utils/flag-extractor.ts'
+import type { CLIInfo } from '../../types/cli.d.ts'
 import { checkFlags } from '../dyarn-internal/flags-check.ts'
 import { commands } from '../dyarn-internal/mod.ts'
 
-export const invokeDyarnCommands = async (script: string, flags: FlagsArray): Promise<{
+export const invokeDyarnCommands = async (cliInfo: CLIInfo): Promise<{
    success: true
 } | {
    success: false
    notFound?: true
    err?: string
 }> => {
-   const command = commands.find(cmd => cmd.invoker === script)
+   const command = commands.find(cmd => cmd.invoker === cliInfo.cmd)
 
    if(!command) return {
       success: false,
@@ -17,7 +17,7 @@ export const invokeDyarnCommands = async (script: string, flags: FlagsArray): Pr
    }
 
    if(command.flags){
-      const { success, err_msg } = checkFlags(flags, command.flags)
+      const { success, err_msg } = checkFlags(cliInfo.flags, command.flags)
 
       if(!success) return {
          success: false,
@@ -25,7 +25,7 @@ export const invokeDyarnCommands = async (script: string, flags: FlagsArray): Pr
       }
    }
 
-   const runCommand = await command.run(flags)
+   const runCommand = await command.run(cliInfo.flags)
 
    if(runCommand.success) return runCommand
    else return {

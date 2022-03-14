@@ -1,0 +1,1 @@
+export const neededPerms: Deno.PermissionName[] = ['read', 'net', 'run', 'write']

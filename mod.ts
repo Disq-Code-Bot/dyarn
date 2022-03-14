@@ -1,3 +1,5 @@
+import type { CLIInfo } from './types/cli.d.ts'
+
 import { PermsCheck } from './src/perms/check.ts'
 import { cli  } from './src/cli/mod.ts'
 import { flagExtractor } from './src/utils/flag-extractor.ts'
@@ -20,8 +22,12 @@ await (async function main() {
          Deno.exit(1)
       }
 
-      const script = flags.cmd as string
-      const args = flags.flags
+      const cliInfo: CLIInfo = {
+         cmd: flags.cmd as string,
+         flags: flags.flags,
+         cwd: Deno.cwd(),
+      }
+
 
       //* Checking if script has right permissions to run
       const permissions = await PermsCheck()
@@ -32,9 +38,10 @@ await (async function main() {
 
       //TODO Add OS check
       //TODO Add version check and update recommendation
+      //TODO Pass current time as cli info to prevent Date inconsistency issues
       
       //* Actually running user's app
-      const cliStatus = await cli(script, args)
+      const cliStatus = await cli(cliInfo)
 
       if(!cliStatus.success) {
          console.error(`[ERROR]: ${cliStatus.err}`)
