@@ -8,5 +8,14 @@ export interface ScriptsType {
 
 export interface ConfigOptions {
    mainFile?: string
+   noCache?: boolean
    scripts: Record<string, ScriptsType>
+}
+
+export interface ConfigFileCacheType {
+   cache: ConfigOptions
+   configFileModDate: string
+   cacheDate: string
+   configFilePath: string
+   cacheFilePath: string
 }
