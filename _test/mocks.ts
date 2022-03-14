@@ -1,3 +1,4 @@
+import type { ConfigOptions } from '../src/config-file/config-types.d.ts';
 import {
    dyarnProjectDirPath,
    configFileCacheFileName
@@ -30,7 +31,7 @@ export const denoJsonMock1 = {
          }
       }
    }
-}
+} as unknown as ConfigOptions
 
 export const denoJsonCacheMock1 = {
    cache: denoJsonMock1,

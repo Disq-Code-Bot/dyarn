@@ -37,7 +37,7 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
    const checkDyarnDir = await checkDyarnProjectDir(cliInfo)
 
    const noCacheFlag = cliInfo.flags!.find(flag => (flag.flagName === 'no-cache' && flag.flagValue === true))
-   let cacheExistsResult = await cacheExists(configPath, cliInfo)
+   const cacheExistsResult = await cacheExists(configPath, cliInfo)
    if(checkDyarnDir.success && (!cliInfo.flags || !noCacheFlag)) {
       if(!cacheExistsResult.success) {
          console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)

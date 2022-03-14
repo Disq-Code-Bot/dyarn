@@ -38,6 +38,7 @@ await (async function main() {
 
       //TODO Add OS check
       //TODO Add version check and update recommendation
+      //TODO Pass current time as cli info to prevent Date inconsistency issues
       
       //* Actually running user's app
       const cliStatus = await cli(cliInfo)

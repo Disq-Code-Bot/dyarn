@@ -1,14 +1,20 @@
 import type {
-   CLIInfo
+   CLIInfo,
 } from '../../../types/cli.d.ts'
+import type {
+   ConfigOptions,
+   ConfigFileCacheType
+} from '../../../src/config-file/config-types.d.ts'
 
 import {
    cacheMockFilePath,
-   denoJsonCacheMock1
+   denoJsonCacheMock1,
+   denoJsonMock1
 } from '../../mocks.ts'
 
 const unusedDenoStatVars = { blksize: 0, blocks: 0, dev: 0, gid: 0, ino: 0, mode: 0, nlink: 0, rdev: 0, uid: 0, size: 0 }
 
+//* Tests list for the config file cache validation and existence tests
 export const testsValidityCheckCases: {
    testName: string
    configFilePath: string
@@ -189,6 +195,7 @@ export const testsValidityCheckCases: {
    },
 ]
 
+//* Tests list for the config file cache invalidation function 
 export const testsInvalidateCases: {
    testName: string
    cacheFilePath: string
@@ -206,5 +213,36 @@ export const testsInvalidateCases: {
       cacheFilePath: cacheMockFilePath,
       fileRemovalSuccess: false,
       success: false,
+   },
+]
+
+//* Test ist for the config file cache creation function
+export const testsCreateCacheCases: {
+   testName: string
+   configFilePath: ConfigFileCacheType['cacheFilePath']
+   cacheFilePath: string
+   config: ConfigOptions
+   cliInfo: CLIInfo
+   configFileStat: Deno.FileInfo
+   success: boolean
+}[] = [
+   {
+      testName: 'Cache creation succeeds',
+      configFilePath: './deno.json',
+      config: denoJsonMock1,
+      cacheFilePath: cacheMockFilePath,
+      cliInfo: {
+         cwd: '.',
+      } as CLIInfo,
+      configFileStat: {
+         isFile: true,
+         isDirectory: false,
+         isSymlink: false,
+         mtime: new Date(denoJsonCacheMock1.cacheDate),
+         atime: new Date(denoJsonCacheMock1.cacheDate),
+         birthtime: new Date(denoJsonCacheMock1.cacheDate),
+         ...unusedDenoStatVars
+      },
+      success: true
    },
 ]
