@@ -47,18 +47,21 @@ export async function cacheExists(configFilePath: string, cliInfo: CLIInfo): Pro
          }
 
          //* Finally checking if cache file is valid
-         if(originalConfigFile.mtime?.toISOString() !== cacheFileJSON.configFileModDate) return {
-            success: true,
-            hasCache: true,
-            isValid: false,
-            err: undefined
-         }
-
-         //* Cache file is valid
-         return {
+         const cacheDateRecord = new Date(cacheFileJSON.configFileModDate)
+         const originalConfigDateMod = new Date(originalConfigFile.mtime)
+         
+         if(cacheDateRecord.toISOString() >= originalConfigDateMod.toISOString()) return {
             success: true,
             hasCache: true,
             isValid: true,
+            err: undefined
+         }
+
+         //* Cache file is not valid
+         return {
+            success: true,
+            hasCache: true,
+            isValid: false,
             err: undefined
          }
       } catch {
