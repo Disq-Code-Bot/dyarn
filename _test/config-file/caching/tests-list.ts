@@ -18,7 +18,7 @@ const unusedDenoStatVars = { blksize: 0, blocks: 0, dev: 0, gid: 0, ino: 0, mode
 export const testsValidityCheckCases: {
    testName: string
    configFilePath: string
-   cliInfo: Partial<CLIInfo>
+   cliInfo: CLIInfo
    expected: {
       success: boolean
       hasCache: boolean | undefined
@@ -38,6 +38,7 @@ export const testsValidityCheckCases: {
       configFilePath: './deno.json',
       cliInfo: {
          cwd: '.',
+         currDate: new Date()
       },
       denoMocks: {
          denoStat: [
@@ -81,6 +82,7 @@ export const testsValidityCheckCases: {
       configFilePath: './deno.json',
       cliInfo: {
          cwd: '.',
+         currDate: new Date()
       },
       denoMocks: {
          denoStat: [
@@ -124,6 +126,7 @@ export const testsValidityCheckCases: {
       configFilePath: './deno.json',
       cliInfo: {
          cwd: '.',
+         currDate: new Date()
       },
       denoMocks: {
          denoStat: [
@@ -167,6 +170,7 @@ export const testsValidityCheckCases: {
       configFilePath: './deno.json',
       cliInfo: {
          cwd: '.',
+         currDate: new Date()
       },
       denoMocks: {
          denoStat: [
@@ -233,7 +237,8 @@ export const testsCreateCacheCases: {
       cacheFilePath: cacheMockFilePath,
       cliInfo: {
          cwd: '.',
-      } as CLIInfo,
+         currDate: new Date()
+      },
       configFileStat: {
          isFile: true,
          isDirectory: false,
@@ -259,7 +264,8 @@ export const testsReadConfigFileCases: {
       testName: 'Cache get succeeds',
       cliInfo: {
          cwd: '.',
-      } as CLIInfo,
+         currDate: new Date()
+      },
       configExpected: denoJsonMock1,
       cacheFileContent: denoJsonCacheMock1,
       success: true,
