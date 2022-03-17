@@ -1,8 +1,13 @@
+import type { CLIInfo } from '../../types/cli.d.ts'
 //* Checking if script has right permissions to run
 
 import { neededPerms } from '../global-defs.ts'
 
-export async function PermsCheck(): Promise<{
+import { 
+   bgLogWarn,
+} from '../cli/logging.ts'
+
+export async function PermsCheck(cliInfo: CLIInfo): Promise<{
    success: true
    err: undefined
 } | {
@@ -14,8 +19,8 @@ export async function PermsCheck(): Promise<{
 
       if(permQuery.state === "granted") return
       
-      //TODO Add as optional with --verbose flag
-      //console.warn(`It is highly recommended that you grant read permission to the runner at installation time!`)
+      
+      bgLogWarn(`It is highly recommended that you grant read permission to the runner at installation time!`, cliInfo)
 
       const permReq = await Deno.permissions.request({ name: perm as any })
 

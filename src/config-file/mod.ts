@@ -17,6 +17,12 @@ import { getConfigFilePath } from "./get-path.ts"
 import { configsCheck } from './config-check.ts'
 import { cacheExists, getCache, createCache, invalidateCache } from './config-cache.ts'
 
+//* Importing colored logs
+import { 
+   prefixLogWarn,
+   prefixLogVerbose
+} from '../cli/logging.ts'
+
 interface ConfigFileMainOverload {
    (cliInfo: CLIInfo): Promise<{ config?: ConfigOptions, err?: true, err_msg?: string }>
    (cliInfo: CLIInfo): Promise<{ config?: ConfigOptions }>
@@ -39,16 +45,16 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
    const noCacheFlag = cliInfo.flags!.find(flag => (flag.flagName === 'no-cache' && flag.flagValue === true))
    const cacheExistsResult = await cacheExists(configPath, cliInfo)
    if(checkDyarnDir.success && (!cliInfo.flags || !noCacheFlag)) {
-      if(!cacheExistsResult.success) {
-         console.warn(`[WARN] Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
-      } 
+      if(!cacheExistsResult.success) 
+         prefixLogWarn(`Cache validity/existante check errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`, cliInfo)
+       
 
       if(!!cacheExistsResult.hasCache && !!cacheExistsResult.isValid) {
          const getCacheResult = await getCache(cliInfo)
-         console.info(`[INFO] Using cached config file.`)
-         if(!getCacheResult.success) {
-            console.warn(`[WARN] Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
-         } else return {
+         prefixLogVerbose(`Using cached config file.`, cliInfo)
+         if(!getCacheResult.success) 
+            prefixLogWarn(`Cache retrieve errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`, cliInfo)
+         else return {
             config: getCacheResult.cache
          }
       }
@@ -58,9 +64,8 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
 
          const invalidateCacheResult = await invalidateCache(cachePath)
 
-         if(!invalidateCacheResult.success) {
-            console.warn(`[WARN] Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
-         }
+         if(!invalidateCacheResult.success) 
+            prefixLogWarn(`Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`, cliInfo)
       }
    }
 
@@ -101,14 +106,14 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
       //* Checking if dyarn project dir exists or creating it
       if(!checkDyarnDir.success) {
          const createDyarnDirResult = await createDyarnProjectDir(cliInfo)
-         if(!createDyarnDirResult.success) {
-            console.warn(`[WARN] Dyarn project dir creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [DIR ERR]: ${createDyarnDirResult.err}`)
-         }
+         if(!createDyarnDirResult.success) 
+            prefixLogWarn(`[WARN] Dyarn project dir creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [DIR ERR]: ${createDyarnDirResult.err}`, cliInfo)
+         
       }
       const configFileStat = await Deno.stat(configPath)
       const cache = await createCache(configsFromFile.config!, configFileStat, configPath, cliInfo)
       if(!cache.success) {
-         console.warn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`)
+         prefixLogWarn(`[WARN] Cache creation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cache.err}`, cliInfo)
       }
    }
 
@@ -117,9 +122,8 @@ export const configFile: ConfigFileMainOverload = async (cliInfo: CLIInfo) => {
       const cachePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
       const invalidateCacheResult = await invalidateCache(cachePath)
 
-      if(!invalidateCacheResult.success) {
-         console.warn(`[WARN] Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`)
-      }
+      if(!invalidateCacheResult.success) 
+         prefixLogWarn(`[WARN] Cache invalidation errored. Dyarn will keep running normally with config file, but this can cause small performance issues.\n [CACHE ERR]: ${cacheExistsResult.err}`, cliInfo)
    }
 
    //* Returning configs
