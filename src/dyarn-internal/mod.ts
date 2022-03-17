@@ -55,12 +55,12 @@ export const commandsNoHelp: Command[] = [
          required: false,
          arr: [
             {
-               flag: '--list',
+               flag: '--all',
                required: false,
                description: 'Prints the list of all available versions',
             },
             {
-               flag: '-l',
+               flag: '-a',
                required: false,
                description: 'Prints the list of all available versions',
             }
