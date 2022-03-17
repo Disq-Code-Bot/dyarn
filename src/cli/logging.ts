@@ -51,7 +51,7 @@ const neutralColor: Rgb = {
 }
 
 function colorString(isBg: boolean, color: Rgb, msg: string, cliInfo: CLIInfo): string {
-   if(cliInfo.flags!.find(flag => flag.flagName === 'no-color')?.flagValue) 
+   if(cliInfo.flags?.find(flag => flag.flagName === 'no-color')?.flagValue) 
       return msg
 
    if(isBg) return bgRgb24(msg, color)
@@ -81,7 +81,7 @@ export function bgLogNorm(msg: string, cliInfo: CLIInfo, opts: Options, color?: 
 export function bgLogSuccess(msg: string, cliInfo: CLIInfo, color?: Rgb): void {
    const colorLog = colorString(true, color ?? successColor, msg, cliInfo)
 
-   Deno.stdout.writeSync(new TextEncoder().encode())
+   Deno.stdout.writeSync(new TextEncoder().encode(colorLog))
    return 
 }
 
