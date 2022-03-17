@@ -21,12 +21,17 @@ await (async function main() {
          console.error(`[ERROR]: ${flags.err}`)
          Deno.exit(1)
       }
-
+      
+      //* Checking if user want's to see extended verbose info
+      const verboseOn = flags.flags!
+         .find(flag => flag.flagName === 'verbose')?.flagValue as boolean ?? false
+         
       const cliInfo: CLIInfo = {
          cmd: flags.cmd as string,
          flags: flags.flags,
          cwd: Deno.cwd(),
-         currDate: new Date()
+         currDate: new Date(),
+         verbose: verboseOn
       }
 
 
