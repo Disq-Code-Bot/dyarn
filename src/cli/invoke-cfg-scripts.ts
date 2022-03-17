@@ -49,8 +49,10 @@ export const invokeCfgScripts: InvokeCfgScriptsOverload =
    try {
       await Deno.stat(runFile)
    } catch (err) {
-      console.error(`[ERROR] The provided/default config file path "${runFile}" was not found!`)
-      Deno.exit(1)
+      return {
+         success: false,
+         err_msg: `[ERROR] The provided/default config file path "${runFile}" was not found!`
+      }
    }
    if(!(await Deno.stat(runFile)).isFile) return {
       success: false,
