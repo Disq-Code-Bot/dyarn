@@ -10,10 +10,6 @@ We plan on maybe adding some more things that we miss from Node's packages manag
 If you have any suggestion, don't mind opening an issue please!!
 
 ---
-### **Technologies**
-Dependency free!
-
----
 ### **Setup**
 > Note: Deno must be installed in your local environment. Tested on version 1.17, if you spot a problem in other versions, please do not hesitate opening an issue
 
@@ -112,6 +108,12 @@ All dyarn options should be passed inside the ```dyarnOptions``` keys inside the
    - *optional:* ```appFlags```: you may sometimes define flags inside your own apps, so we added this where you can put them. As they are custom and should be read by your app, Dyarn passes them after passing your app path on the CLI, just as when running Deno command's directly in the CLI. Not required and have no influence neither on Deno nor Dyarn.
    - *optional:* ```env```: in case you need to define some env variables inside your app, you may define them here. This option is optional and has an object format with any key/value type:
       - ```[key: any]: any```
+
+---
+### *Uses*
+- From Deno's standard library:
+   - FMT colors: https://deno.land/std@0.130.0/fmt/colors.ts
+
 
 ---
 ### *Contributing*
