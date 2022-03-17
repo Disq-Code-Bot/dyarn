@@ -25,7 +25,7 @@ export const invokeDyarnCommands = async (cliInfo: CLIInfo): Promise<{
       }
    }
 
-   const runCommand = await command.run(cliInfo.flags)
+   const runCommand = await command.run(cliInfo.flags, cliInfo)
 
    if(runCommand.success) return runCommand
    else return {

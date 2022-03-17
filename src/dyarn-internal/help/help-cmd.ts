@@ -1,8 +1,14 @@
+import type { CLIInfo } from './../../../types/cli.d.ts'
+
 import { commandsNoHelp } from '../mod.ts'
 
-//TODO fix, wrong flag '-a' being used, should be: '-l' or '--list'
+import {
+   logNorm,
+   fontFormat,
+   colorString
+} from '../../cli/logging.ts'
 
-export const help = async (): Promise<{
+export const help = async (cliInfo: CLIInfo): Promise<{
    success: true
 } | {
    success: false,
@@ -16,14 +22,20 @@ export const help = async (): Promise<{
       dyarn [command] [flags]
 
    FULL HELP: ${commandsNoHelp.map(cmd => `
-   - Command: '${cmd.invoker}'
-      Description: ${cmd.description}
+   - \`${
+      colorString(false, {r: 143, g: 255, b: 249}, cmd.invoker, cliInfo)
+   }\`
+      ${cmd.description ? fontFormat(cmd.description, {italic: true}) : 'No description'}
       ${cmd.flags ? `Flags: ${cmd.flags.arr.map(flag => `
-         - '${flag.flag}' - ${flag.required ? 'required' : 'optional'}
-            ${flag.description ? `Description: ${flag.description}` : ''}`)}` 
+         - \`${flag.flag}\` - ${
+            fontFormat(flag.required ? 'required' : 'optional', {dim: true})
+            }
+            ${flag.description ? `Description: ${
+               fontFormat(flag.description, {italic: true})
+            }` : ''}`)}` 
       : ''}`)}
    `
 
-   await console.log(helpString)
+   await logNorm(helpString, cliInfo)
    return { success: true }
 }

@@ -1,3 +1,4 @@
+import type { CLIInfo } from './../../types/cli.d.ts'
 import type { FlagsArray } from '../utils/flag-extractor.ts'
 
 import { issuesUrl, dyarnProjectDirPath, configFileCacheFileName } from '../global-defs.ts'
@@ -7,11 +8,16 @@ import { help } from './help/help-cmd.ts'
 import { getVersion } from './version.ts'
 import { invalidateCache } from '../config-file/config-cache.ts'
 
+import {
+   logNorm,
+   prefixLogSuccess
+} from '../cli/logging.ts'
+
 export interface Command {
    invoker: string,
    description?: string,
    flags?: CommandFlags
-   run: (flag: FlagsArray) => Promise<{ success: true } | { success: false, err: string }>,
+   run: (flag: FlagsArray, cliInfo: CLIInfo) => Promise<{ success: true } | { success: false, err: string }>,
 }
 
 export interface  CommandFlags {
@@ -28,8 +34,10 @@ export const commandsNoHelp: Command[] = [
    {
       invoker: 'issues',
       description: 'Gives you the link to the issues page of the project',
-      run: async () => {
-         await console.log(`You may open an issues at: ${issuesUrl}!`)
+      run: async (_flags, cliInfo) => {
+         await logNorm(`You may open an issues at: ${issuesUrl}!`, cliInfo, {
+            italic: true,
+         })
          return { success: true }
       }
    },
@@ -46,7 +54,14 @@ export const commandsNoHelp: Command[] = [
             },
          ],
       },
-      run: async () => { await console.log('Unavailable'); return {success: true} }
+      run: async (_flags, cliInfo) => { 
+         await logNorm('Sorry this is still unavailable', cliInfo, undefined, {
+            r: 241,
+            g: 255,
+            b: 48,
+         })
+         return {success: true} 
+      }
    },
    {
       invoker: 'version',
@@ -55,25 +70,28 @@ export const commandsNoHelp: Command[] = [
          required: false,
          arr: [
             {
-               flag: '--list',
+               flag: '--all',
                required: false,
                description: 'Prints the list of all available versions',
             },
             {
-               flag: '-l',
+               flag: '-a',
                required: false,
                description: 'Prints the list of all available versions',
             }
          ],
       },
-      run: async (flags) => { const versionRun = await getVersion(flags); return versionRun },
+      run: async (flags, cliInfo) => { 
+         const versionRun = await getVersion(flags, cliInfo) 
+         return versionRun 
+      },
    },
    {
-      invoker: 'invalidate-cfg-cache',
+      invoker: 'clean',
       description: 'Invalidates the config file cache',
-      run: async () => {
-         await console.log(`  Invalidating config file cache...`)
-         const cachePath = `${Deno.cwd()}/${dyarnProjectDirPath}/${configFileCacheFileName}`
+      run: async (_flags, cliInfo) => {
+         logNorm(`Invalidating config file cache...`, cliInfo)
+         const cachePath = `${cliInfo.cwd}/${dyarnProjectDirPath}/${configFileCacheFileName}`
          const invalidateCacheResult = await invalidateCache(cachePath)
          
          if(!invalidateCacheResult.success) return {
@@ -81,7 +99,7 @@ export const commandsNoHelp: Command[] = [
             err: `Error invalidating config file cache:\n ${invalidateCacheResult.err}`,
          }
 
-         console.log(`   Successfully invalidated config file cache!`)
+         prefixLogSuccess(`Successfully invalidated config file cache!`, cliInfo)
          return {
             success: true,
          }
@@ -93,7 +111,7 @@ export const commands: Command[] = [
    {
       invoker: "help",
       description: "Prints this help message",
-      run: () => help(),
+      run: (_flags, cliInfo) => help(cliInfo),
    },
    ...commandsNoHelp
 ]

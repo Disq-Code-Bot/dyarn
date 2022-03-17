@@ -9,4 +9,5 @@ export interface CLIInfo {
    cmd?: CMD
    cwd?: string
    env?: Record<any, any>
+   verbose?: boolean
 }
