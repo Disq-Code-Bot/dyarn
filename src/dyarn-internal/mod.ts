@@ -11,7 +11,7 @@ export interface Command {
    invoker: string,
    description?: string,
    flags?: CommandFlags
-   run: (flag: FlagsArray) => Promise<{ success: true } | { success: false, err: string }>,
+   run: (flag: FlagsArray, cliInfo: CLIInfo) => Promise<{ success: true } | { success: false, err: string }>,
 }
 
 export interface  CommandFlags {

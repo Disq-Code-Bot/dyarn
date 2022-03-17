@@ -9,8 +9,6 @@ import {
    bgLogError
 } from './src/cli/logging.ts'
 
-//TODO Add https://deno.land/std@0.97.0/fmt for better logging and colors :)
-
 await (async function main() {
    //* Checking if there is any flag
    if(!Deno.args || Deno.args.length === 0) {
