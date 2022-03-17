@@ -1,34 +1,69 @@
-import { PermsCheck } from './src/permCheck.ts'
-import { ConfigFileCheck, defaultConfigFile } from './src/configFileCheck.ts'
-import { RunApp } from './src/runner.ts'
+import type { CLIInfo } from './types/cli.d.ts'
 
-const command = Deno.args[0] as string
-const args = Deno.args.length !== 1 ?
-   Deno.args.slice().splice(1, Deno.args.length - 1) as string[] 
-   : [''] as string[]
+import { PermsCheck } from './src/perms/check.ts'
+import { cli  } from './src/cli/mod.ts'
+import { flagExtractor } from './src/utils/flag-extractor.ts'
+
+import { 
+   prefixLogError,
+   bgLogError
+} from './src/cli/logging.ts'
 
 await (async function main() {
-   try {
+   //* Checking if there is any flag
+   if(!Deno.args || Deno.args.length === 0) {
+      bgLogError("You must provide at least one argument!", {
+         verbose: true
+      } as CLIInfo)
+      Deno.exit(1)
+   }
+   
+   //* Extracting flags and command
+   const flags = flagExtractor(Deno.args)
+   if(flags.err) {
+      prefixLogError(`${flags.err}`, {
+         verbose: true
+      } as CLIInfo)
+      Deno.exit(1)
+   }
+   
+   //* Checking if user want's to see extended verbose info
+   const verboseOn = flags.flags
+      ?.find(flag => flag.flagName === 'verbose')?.flagValue as boolean ?? false
+
+   const cliInfo: CLIInfo = {
+      cmd: flags.cmd as string,
+      flags: flags.flags,
+      cwd: Deno.cwd(),
+      currDate: new Date(),
+      verbose: verboseOn
+   }
+   
+   try {   
+
+
       //* Checking if script has right permissions to run
-      await PermsCheck()
-      
-      //* Getting config file path from command line or default
-      let configFilePath
-      if (Array.isArray(args)) args.forEach(arg => {
-         if(RegExp(/^--config=([^\s].*)/).test(arg)) configFilePath = arg.replace(/^--config=/, '')
-      })
-      else configFilePath = defaultConfigFile
-      
-      //* Checking if config file exists and is has correct format
-      const configFile = await ConfigFileCheck(configFilePath)
+      const permissions = await PermsCheck(cliInfo)
+      if(!permissions.success) {
+         prefixLogError(`${permissions.err}`, cliInfo)
+         Deno.exit(1)
+      }
+
+      //TODO Add OS check
+      //TODO Add version check and update recommendation
       
       //* Actually running user's app
-      await RunApp(configFile, command)
+      const cliStatus = await cli(cliInfo)
+
+      if(!cliStatus.success) {
+         prefixLogError(`${cliStatus.err}`, cliInfo)
+         Deno.exit(1)
+      }
    
       //* Voila, finished!
       Deno.exit(0)
    } catch(error) {
-      console.log(`[ERROR]:\n ${error}`)
+      prefixLogError(`[UNEXPECTED]\n ${error}`, cliInfo)
       Deno.exit(1)
    }
 })()
