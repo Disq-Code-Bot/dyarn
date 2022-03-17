@@ -70,9 +70,9 @@ function fontFormat(msg: string, options: Options): string {
 }
 
 //* Logging functions with background color 
-export function bgLogNorm(msg: string, cliInfo: CLIInfo, opts: Options, color?: Rgb): void {
+export function bgLogNorm(msg: string, cliInfo: CLIInfo, opts?: Options, color?: Rgb): void {
    const colorLog = colorString(true, color ?? neutralColor, msg, cliInfo)
-   const formatLog = fontFormat(colorLog, opts)
+   const formatLog = opts ? fontFormat(colorLog, opts) : colorLog
 
    Deno.stdout.writeSync(new TextEncoder().encode(formatLog))
    return
@@ -108,9 +108,9 @@ export function bgLogVerbose(msg: string, cliInfo: CLIInfo, color?: Rgb): void {
 }
 
 //* Logging functions with text color
-export function logNorm(msg: string, cliInfo: CLIInfo, opts: Options, color?: Rgb): void {
+export function logNorm(msg: string, cliInfo: CLIInfo, opts?: Options, color?: Rgb): void {
    const colorLog = colorString(false, color ?? neutralColor, msg, cliInfo)
-   const formatLog = fontFormat(colorLog, opts)
+   const formatLog = opts ? fontFormat(colorLog, opts) : colorLog
 
    Deno.stdout.writeSync(new TextEncoder().encode(formatLog))
    return
