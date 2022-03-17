@@ -50,7 +50,7 @@ const neutralColor: Rgb = {
    b: 255,
 }
 
-function colorString(isBg: boolean, color: Rgb, msg: string, cliInfo: CLIInfo): string {
+export function colorString(isBg: boolean, color: Rgb, msg: string, cliInfo: CLIInfo): string {
    if(cliInfo.flags?.find(flag => flag.flagName === 'no-color')?.flagValue) 
       return msg
 
@@ -58,7 +58,7 @@ function colorString(isBg: boolean, color: Rgb, msg: string, cliInfo: CLIInfo): 
    else return rgb24(msg, color)
 }
 
-function fontFormat(msg: string, options: Options): string {
+export function fontFormat(msg: string, options: Options): string {
    let result = msg
    if(options.italic) result = italic(result)
    if(options.bold) result = bold(result)
