@@ -20,4 +20,4 @@ export const configType = {
    }
 }
 
-export const version = "1.0.5-dev"
+export const version = "1.2.0"
